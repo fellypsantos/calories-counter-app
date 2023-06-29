@@ -6,7 +6,7 @@ interface IColors {
 }
 
 const Colors: IColors = {
-    Primary: '#7159c1',
+    Primary: '#7F22A7',
     Secondary: '#984eb8',
     Contrast: '#F4EBF7',
     TextPrimary: '#545454'
