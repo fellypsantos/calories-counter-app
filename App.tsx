@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import mobileAds from 'react-native-google-mobile-ads';
 
 import Colors from './src/Colors';
 import SplashScreen from './src/Screens/SplashScreen';
@@ -9,6 +10,12 @@ import React from 'react';
 import { View } from 'react-native';
 
 const Stack = createNativeStackNavigator();
+
+mobileAds()
+  .initialize()
+  .then(adapterStatuses => {
+    console.log('Google Ads Loaded.');
+  });
 
 export default function App() {
   return (

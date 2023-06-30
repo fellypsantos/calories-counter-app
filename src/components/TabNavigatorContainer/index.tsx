@@ -5,13 +5,14 @@ import Home from '../../Tabs/Home';
 import Colors from '../../Colors';
 import History from '../../Tabs/History';
 import Settings from '../../Tabs/Settings';
+import CustomTabBarNavigation from '../CustomTabBarNavigation';
 
 const Tab = createBottomTabNavigator();
 
 export default function () {
     return (
         <Tab.Navigator
-            // tabBar={(props) => <CustomTabBarNavigation {...props} />}
+            tabBar={(props) => <CustomTabBarNavigation {...props} />}
             screenOptions={({ route }) => ({
                 tabBarActiveTintColor: Colors.Primary,
                 tabBarActiveBackgroundColor: '#fff',
@@ -24,15 +25,10 @@ export default function () {
                 tabBarIcon: ({ color }) => {
                     let iconName;
 
-                    if (route.name === 'Home') {
-                        iconName = 'home';
-                    } else if (route.name === 'History') {
-                        iconName = 'history';
-                    } else if (route.name === 'Settings') {
-                        iconName = 'cog';
-                    }
+                    if (route.name === 'Home') iconName = 'home';
+                    else if (route.name === 'History') iconName = 'history';
+                    else if (route.name === 'Settings') iconName = 'cog';
 
-                    // You can return any component that you like here!
                     return <Icon name={iconName} size={15} color={color} />;
                 }
             })}
