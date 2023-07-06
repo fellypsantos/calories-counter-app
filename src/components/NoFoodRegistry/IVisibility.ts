@@ -1,0 +1,3 @@
+interface IVisibility {
+  hidden?: boolean
+}
