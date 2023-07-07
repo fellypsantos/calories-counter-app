@@ -1,19 +1,19 @@
+import React from 'react';
+import mobileAds from 'react-native-google-mobile-ads';
 import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import mobileAds from 'react-native-google-mobile-ads';
+import { RealmProvider } from './src/databases';
+import { TranslationProvider } from './src/hooks/translation';
 
 import AddFoodRegistry from './src/Screens/AddFoodRegistry';
 import SplashScreen from './src/Screens/SplashScreen';
 import EntryPoint from './src/Screens/EntryPoint';
-import React from 'react';
 
-import { RealmProvider } from './src/databases';
 import Colors from './src/Colors';
-import { TranslationProvider } from './src/contexts/TranslationContext';
 
-import './src/i18n';
+import './i18n.config';
 const Stack = createNativeStackNavigator();
 
 mobileAds()
