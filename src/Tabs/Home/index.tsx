@@ -12,12 +12,12 @@ import FoodRegistryListItem from "../../components/FoodRegistryListItem";
 import { useQuery, useRealm } from "../../databases";
 import { FoodHistory } from "../../databases/schema/FoodHistory";
 import { Linking } from "react-native";
-import { useContext } from "react";
-import { TranslationContext } from "../../contexts/TranslationContext";
+import { useAppTranslation } from '../../hooks/translation';
+import i18next from "i18next";
 
 export default function Home() {
 
-  const { Translator } = useContext(TranslationContext);
+  const { Translate, selectedLanguage, setCurrentLanguage } = useAppTranslation();
 
   const foodHistory = useQuery(FoodHistory);
   const realm = useRealm();
@@ -63,8 +63,14 @@ export default function Home() {
 
       }} />
 
-      <CallToAction title={Translator('Welcome')} description="Botão de ação para manipular a database." handleOnPress={() => {
-        console.log('testando context');
+      <CallToAction title={Translate('App.Name')} description="Botão de ação para manipular a database." handleOnPress={() => {
+        console.log('language will change');
+
+        console.log('selectedLanguage', selectedLanguage);
+
+        setCurrentLanguage('en');
+
+        console.log('selectedLanguage', selectedLanguage);
 
         // realm.write(() => {
         //   // realm.create('food_history', FoodHistory.generate({
