@@ -14,7 +14,7 @@ export default function TopBarAddFoodRegistry() {
       </PhraseRegistryCount>
 
       <ButtonAddFoodRegistry
-        onPress={() => navigation.navigate('AddFoodRegistrySection')}>
+        onPress={() => navigation.navigate('AddFoodRegistry')}>
         <Icon name="plus-circle" size={20} color={Colors.Primary} />
       </ButtonAddFoodRegistry>
     </Container>
