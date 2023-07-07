@@ -3,19 +3,21 @@ import { BlockDescription, BlockTitle, Container, RightContentBox } from "./styl
 import Colors from '../../Colors';
 
 interface IProps {
+  title: string;
+  description: string;
   handleOnPress(): void;
 }
 
-export default function CallToAction({ handleOnPress }: IProps) {
+export default function CallToAction({ title, description, handleOnPress }: IProps) {
   return (
     <Container onPress={handleOnPress}>
       <Icon name="google-play" size={20} color={Colors.TextPrimary} />
       <RightContentBox>
         <BlockTitle>
-          Mais apps
+          {title}
         </BlockTitle>
         <BlockDescription>
-          Descrição sobre acessar mais apps.
+          {description}
         </BlockDescription>
       </RightContentBox>
     </Container>
