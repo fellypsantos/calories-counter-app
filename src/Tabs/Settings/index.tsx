@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { Alert, KeyboardAvoidingView, Text } from "react-native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/FontAwesome5';
 
 import MainTitle from "../../components/MainTitle";
@@ -14,10 +15,15 @@ import Picker from "../../components/Picker";
 
 import Colors from "../../Colors";
 import { ButtonsContainer, Container, MainView } from "./styles";
+import Toaster from "../../Toaster";
+import DataBase from "../../databases";
+import { BottomTabNavigationProps } from "../../routes/BottomTabs";
 
 export default function () {
   const { Translate, selectedLanguage } = useAppTranslation();
-  const { profile, setProfile, addProfile } = useProfile();
+  const { profile, setProfile, addProfile, loadingProfile } = useProfile();
+
+  const navigation = useNavigation<BottomTabNavigationProps>();
 
   const formLabelTranslated = useMemo(() => ({
     name: Translate('Settings.Name'),
@@ -65,7 +71,7 @@ export default function () {
   const [currentActivityFactor, setCurrentActivityFactor] = useState(profile.activityFactor);
 
   const handleUpdateProfileField = (field: string, value: string | number) => {
-    console.log('update', profile, { ...profile });
+    setProfile({ ...profile, [field]: value });
   };
 
   const handleSaveProfile = useCallback(() => {
@@ -99,7 +105,18 @@ export default function () {
         activityFactor: currentActivityFactor
       }
 
-      addProfile(newProfileRegistrationData);
+      if (!profile.createdAt) {
+        addProfile(newProfileRegistrationData);
+
+        navigation.dispatch(CommonActions.reset({
+          index: 1,
+          routes: [{ name: 'EntryPoint' }]
+        }));
+      }
+
+      else navigation.navigate('Home');
+
+      Toaster.ShowToast({ text: Translate('Toast.InformationsUpdated') });
     }
     catch (err) {
       const error = err as Error;
@@ -111,85 +128,89 @@ export default function () {
   return (
     <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
       <Container>
-        <MainView>
-          <Icon name="user-alt" size={40} color={Colors.Primary} />
-          <MainTitle>{Translate('Settings.Title')}</MainTitle>
-          <Subtitle>{Translate('Settings.Description')}</Subtitle>
+        {
+          !loadingProfile && (
+            <MainView>
+              <Icon name="user-alt" size={40} color={Colors.Primary} />
+              <MainTitle>{Translate('Settings.Title')}</MainTitle>
+              <Subtitle>{Translate('Settings.Description')}</Subtitle>
 
-          <TextInputCustom
-            label={formLabelTranslated.name}
-            value={profile.name}
-            placeholder="Jhon Doe"
-            onChange={(text) => handleUpdateProfileField('name', text)}
-            handlePressIcon={() => handleUpdateProfileField('name', '')}
-          />
+              <TextInputCustom
+                label={formLabelTranslated.name}
+                value={profile.name}
+                placeholder="Jhon Doe"
+                onChange={(text) => handleUpdateProfileField('name', text)}
+                handlePressIcon={() => handleUpdateProfileField('name', '')}
+              />
 
-          <TextInputCustom
-            label={formLabelTranslated.phrase}
-            value={profile.phrase}
-            placeholder="Keep strong and focused!"
-            onChange={text => handleUpdateProfileField('phrase', text)}
-            handlePressIcon={() => handleUpdateProfileField('phrase', '')}
-            autoCorrect={false}
-          />
+              <TextInputCustom
+                label={formLabelTranslated.phrase}
+                value={profile.phrase}
+                placeholder="Keep strong and focused!"
+                onChange={text => handleUpdateProfileField('phrase', text)}
+                handlePressIcon={() => handleUpdateProfileField('phrase', '')}
+                autoCorrect={false}
+              />
 
-          <TextInputCustom
-            label={formLabelTranslated.weight}
-            value={profile.weight?.toString()}
-            placeholder="50"
-            keyboardType="numeric"
-            onChange={text => handleUpdateProfileField('weight', text.replace(',', '.'))}
-            handlePressIcon={() => handleUpdateProfileField('weight', '')}
-            autoCorrect={false}
-          />
+              <TextInputCustom
+                label={formLabelTranslated.weight}
+                value={profile.weight?.toString()}
+                placeholder="50"
+                keyboardType="numeric"
+                onChange={text => handleUpdateProfileField('weight', text.replace(',', '.'))}
+                handlePressIcon={() => handleUpdateProfileField('weight', '')}
+                autoCorrect={false}
+              />
 
-          <TextInputCustom
-            label={formLabelTranslated.height}
-            value={profile.height?.toString()}
-            placeholder="165"
-            keyboardType="numeric"
-            onChange={text => handleUpdateProfileField('height', text)}
-            handlePressIcon={() => handleUpdateProfileField('height', '')}
-            autoCorrect={false}
-          />
+              <TextInputCustom
+                label={formLabelTranslated.height}
+                value={profile.height?.toString()}
+                placeholder="165"
+                keyboardType="numeric"
+                onChange={text => handleUpdateProfileField('height', text)}
+                handlePressIcon={() => handleUpdateProfileField('height', '')}
+                autoCorrect={false}
+              />
 
-          <TextInputCustom
-            label={formLabelTranslated.age}
-            value={profile.age?.toString()}
-            placeholder="26"
-            keyboardType="numeric"
-            onChange={text => handleUpdateProfileField('age', text)}
-            handlePressIcon={() => handleUpdateProfileField('age', '')}
-            autoCorrect={false}
-          />
+              <TextInputCustom
+                label={formLabelTranslated.age}
+                value={profile.age?.toString()}
+                placeholder="26"
+                keyboardType="numeric"
+                onChange={text => handleUpdateProfileField('age', text)}
+                handlePressIcon={() => handleUpdateProfileField('age', '')}
+                autoCorrect={false}
+              />
 
-          <Picker
-            label={formLabelTranslated.gender}
-            selectedValue={profile.gender}
-            onValueChange={(value) => handleUpdateProfileField('gender', value as string)}
-            items={genderOptions}
-          />
+              <Picker
+                label={formLabelTranslated.gender}
+                selectedValue={profile.gender}
+                onValueChange={(value) => handleUpdateProfileField('gender', value as string)}
+                items={genderOptions}
+              />
 
-          <Picker
-            label={formLabelTranslated.activityProfile}
-            selectedValue={currentActivityFactor}
-            onValueChange={(value) => setCurrentActivityFactor(value as number)}
-            items={activityFactorOptions}
-          />
+              <Picker
+                label={formLabelTranslated.activityProfile}
+                selectedValue={currentActivityFactor}
+                onValueChange={(value) => setCurrentActivityFactor(value as number)}
+                items={activityFactorOptions}
+              />
 
-          <Subtitle>
-            {currentActivityFactor === undefined
-              ? activityFactorOptions[0].description
-              : activityFactorOptions.find(item => item.value === currentActivityFactor)?.description}
-          </Subtitle>
+              <Subtitle>
+                {currentActivityFactor === undefined
+                  ? activityFactorOptions[0].description
+                  : activityFactorOptions.find(item => item.value === currentActivityFactor)?.description}
+              </Subtitle>
 
-          <ButtonsContainer>
-            <ButtonDefault
-              text={Translate('Buttons.SaveSettings')}
-              onPress={handleSaveProfile}
-            />
-          </ButtonsContainer>
-        </MainView>
+              <ButtonsContainer>
+                <ButtonDefault
+                  text={Translate('Buttons.SaveSettings')}
+                  onPress={handleSaveProfile}
+                />
+              </ButtonsContainer>
+            </MainView>
+          )
+        }
       </Container>
     </KeyboardAvoidingView>
   )
