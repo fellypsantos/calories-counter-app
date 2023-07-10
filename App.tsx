@@ -8,6 +8,9 @@ import './i18n.config';
 import Colors from './src/Colors';
 import AppProvider from './src/hooks';
 import MainStack from './src/routes/MainStack';
+import Database from './src/databases';
+
+Database.open();
 
 mobileAds()
   .initialize()
