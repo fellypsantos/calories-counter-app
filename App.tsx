@@ -3,18 +3,11 @@ import mobileAds from 'react-native-google-mobile-ads';
 import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { RealmProvider } from './src/databases';
-import { TranslationProvider } from './src/hooks/translation';
-
-import AddFoodRegistry from './src/Screens/AddFoodRegistry';
-import SplashScreen from './src/Screens/SplashScreen';
-import EntryPoint from './src/Screens/EntryPoint';
-
-import Colors from './src/Colors';
 
 import './i18n.config';
-const Stack = createNativeStackNavigator();
+import Colors from './src/Colors';
+import AppProvider from './src/hooks';
+import MainStack from './src/routes/MainStack';
 
 mobileAds()
   .initialize()
@@ -26,17 +19,11 @@ export default function App() {
   return (
     <View style={{ flex: 1, paddingTop: 20 }}>
       <StatusBar backgroundColor={Colors.Primary} style='light' />
-      <TranslationProvider>
-        <RealmProvider>
-          <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-              {/* <Stack.Screen name="SplashScreen" component={SplashScreen} /> */}
-              <Stack.Screen name="EntryPoint" component={EntryPoint} />
-              <Stack.Screen name="AddFoodRegistry" component={AddFoodRegistry} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </RealmProvider>
-      </TranslationProvider>
+      <AppProvider>
+        <NavigationContainer>
+          <MainStack />
+        </NavigationContainer>
+      </AppProvider>
     </View>
   )
 }
