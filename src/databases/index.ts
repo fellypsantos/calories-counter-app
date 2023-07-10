@@ -1,0 +1,85 @@
+import SQLite, { SQLiteDatabase } from 'react-native-sqlite-storage';
+import { Alert } from 'react-native';
+import { IProfile } from '../interfaces/IProfile';
+
+export default class DataBase {
+  static db: SQLiteDatabase;
+
+  static open = () => {
+    if (!this.db) {
+      this.db = SQLite.openDatabase({ name: 'appDB', createFromLocation: '~database.sqlite' },
+        () => { console.log('DATABASE SUCCESSFULLY OPENED!'); },
+        err => {
+          console.warn('err', err);
+          Alert.alert('Ops!', 'Falha ao abrir o banco de dados.\n');
+        },
+      );
+    }
+    return this.db;
+  };
+
+  static validateConnection = () => {
+    if (!this.db) throw new Error("Database connection is closed.");
+  };
+
+  static getProfileData = (callback: (result: IProfile | null) => void) => {
+    this.validateConnection();
+
+    this.db.transaction(tx => {
+      tx.executeSql('SELECT * FROM profile', undefined, (_, results) => {
+        if (results.rows.length === 0) {
+          callback(null);
+          return;
+        }
+
+        const profile: IProfile = results.rows.item(0);
+        callback(profile);
+      });
+    });
+  };
+
+  static addProfile = (profile: IProfile, callback: (success: boolean) => void) => {
+
+    console.log('iniciar a transaction');
+    this.validateConnection();
+
+    const {
+      name,
+      phrase,
+      weight,
+      height,
+      age,
+      gender,
+      activityFactor,
+      createdAt
+    } = profile;
+
+    const sqlToRun = 'INSERT INTO profile(name, phrase, weight, height, age, gender, activityFactor, createdAt) VALUES (?,?,?,?,?,?,?,?)';
+
+    const sqlValues = [
+      name,
+      phrase,
+      weight,
+      height,
+      age,
+      gender,
+      activityFactor,
+      createdAt
+    ];
+
+    this.db.transaction(tx => {
+      tx.executeSql(sqlToRun, sqlValues,
+        (_, results) => {
+          callback(results.rowsAffected > 0);
+        });
+    });
+  };
+
+  static truncateProfile = () => {
+    this.db.transaction(tx => {
+      tx.executeSql('DELETE FROM profile', undefined, () => {
+        console.log('✅ PROFILE TABLE CLEARED');
+      });
+    });
+  }
+}
