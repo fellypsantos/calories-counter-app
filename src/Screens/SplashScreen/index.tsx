@@ -11,7 +11,7 @@ import AppLogoSource from '../../../assets/images/eating.png';
 export default function () {
   const { Translate } = useAppTranslation();
   const [loading, setLoading] = useState(true);
-  const { profile } = useProfile();
+  const { profile, loadingProfile } = useProfile();
 
   const navigation = useNavigation();
 
@@ -23,13 +23,11 @@ export default function () {
   }
 
   useEffect(() => {
-    setTimeout(() => {
+    if (loadingProfile) return;
+    if (profile?.createdAt) openMainScreenWithBottomTabs();
+    setLoading(false);
 
-      if (profile.createdAt !== null) openMainScreenWithBottomTabs();
-      else setLoading(false);
-
-    }, 1800);
-  }, []);
+  }, [loadingProfile]);
 
   return (
     <Container>
