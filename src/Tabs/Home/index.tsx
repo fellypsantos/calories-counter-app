@@ -1,3 +1,4 @@
+import { Linking } from "react-native";
 import ScrollViewContainer from "../../components/ScrollViewContainer";
 
 import { BottomContainer, ListContainer, ListItemTouchable, TopContainer } from "./styles";
@@ -9,18 +10,11 @@ import NoFoodRegistry from "../../components/NoFoodRegistry";
 import CallToAction from "../../components/CallToAction";
 import FoodRegistryListItem from "../../components/FoodRegistryListItem";
 
-import { useQuery, useRealm } from "../../databases";
-import { FoodHistory } from "../../databases/schema/FoodHistory";
-import { Linking } from "react-native";
 import { useAppTranslation } from '../../hooks/translation';
-import i18next from "i18next";
 
 export default function Home() {
 
   const { Translate, selectedLanguage, setCurrentLanguage } = useAppTranslation();
-
-  const foodHistory = useQuery(FoodHistory);
-  const realm = useRealm();
 
   const theFoodHistory = [{ id: 1 }, { id: 2 }];
 
@@ -54,38 +48,9 @@ export default function Home() {
         }}
       />
 
-      <CallToAction title="DEV" description="Botão de testes" handleOnPress={() => {
-        console.log('Testando realm db!');
+      <CallToAction title="DEV" description="Botão de testes" handleOnPress={() => { }} />
 
-        const response = foodHistory.toJSON();
-
-        console.log('response = ', response);
-
-      }} />
-
-      <CallToAction title={Translate('App.Name')} description="Botão de ação para manipular a database." handleOnPress={() => {
-        console.log('language will change');
-
-        console.log('selectedLanguage', selectedLanguage);
-
-        setCurrentLanguage('en');
-
-        console.log('selectedLanguage', selectedLanguage);
-
-        // realm.write(() => {
-        //   // realm.create('food_history', FoodHistory.generate({
-        //   //   name: 'Refeição Teste',
-        //   //   kcal: 321,
-        //   //   category_level: 2,
-        //   //   datetime: new Date(),
-        //   // }));
-
-        //   realm.deleteAll();
-
-        //   console.log('table is clean');
-        // });
-
-      }} />
+      <CallToAction title={Translate('App.Name')} description="Botão de ação para manipular a database." handleOnPress={() => { }} />
     </ScrollViewContainer>
   );
 }
