@@ -14,7 +14,7 @@ import { useAppTranslation } from '../../hooks/translation';
 
 export default function Home() {
 
-  const { Translate, selectedLanguage, setCurrentLanguage } = useAppTranslation();
+  const { Translate } = useAppTranslation();
 
   const theFoodHistory = [{ id: 1 }, { id: 2 }];
 
@@ -41,16 +41,12 @@ export default function Home() {
       </BottomContainer>
 
       <CallToAction
-        title="Mais Aplicativos"
-        description="Descrição sobre acessar mais apps."
+        title={Translate('BlockOption.Developer.MoreApps.Title')}
+        description={Translate('BlockOption.Developer.MoreApps.Description')}
         handleOnPress={() => {
           Linking.openURL('https://play.google.com/store/apps/dev?id=4983605265674024761');
         }}
       />
-
-      <CallToAction title="DEV" description="Botão de testes" handleOnPress={() => { }} />
-
-      <CallToAction title={Translate('App.Name')} description="Botão de ação para manipular a database." handleOnPress={() => { }} />
     </ScrollViewContainer>
   );
 }
