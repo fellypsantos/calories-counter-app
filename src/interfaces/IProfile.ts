@@ -6,5 +6,5 @@ export interface IProfile {
   age: number;
   gender: string;
   activityFactor: number;
-  createdAt: Date;
+  createdAt: string | null;
 }
