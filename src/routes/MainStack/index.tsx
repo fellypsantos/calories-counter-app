@@ -16,8 +16,7 @@ export interface PageProps {
   navigation: NativeStackNavigationProp<RootStackParamList>;
 }
 
-export type StackNavigationProps =
-  NativeStackNavigationProp<RootStackParamList>;
+export type StackNavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 const { Navigator, Screen } = createNativeStackNavigator<RootStackParamList>();
 
