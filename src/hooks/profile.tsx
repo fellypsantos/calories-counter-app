@@ -1,5 +1,7 @@
 import { createContext, useMemo, useContext, useState, useEffect, useCallback } from 'react';
 import { IProfile } from '../interfaces/IProfile';
+import DataBase from '../databases';
+import dayjs from 'dayjs';
 
 interface IProfileContext {
   profile: IProfile,
@@ -18,21 +20,35 @@ const ProfileProvider = ({ children }: IProps) => {
 
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [profile, setProfile] = useState<IProfile>({
-    name: 'Leon Kennedy',
+    name: '',
     phrase: '',
     gender: 'M',
-    age: 16,
+    age: 26,
     weight: 65,
     height: 165,
     activityFactor: 1.2,
-    createdAt: new Date(),
+    createdAt: null,
   });
 
   useEffect(() => {
 
+    DataBase.getProfileData(profile => {
+
+      if (profile) setProfile(profile);
+      setLoadingProfile(false);
+    });
   }, []);
 
   const addProfile = useCallback((newProfile: IProfile) => {
+
+    const profile = { ...newProfile, createdAt: dayjs().toISOString() };
+
+    DataBase.addProfile(profile, (success) => {
+      console.log(newProfile);
+      console.log('addProfile:', success ? '✅' : '❌');
+      setProfile(profile);
+    });
+
   }, [profile]);
 
   const contextValues = useMemo(() => ({
