@@ -34,8 +34,6 @@ export default class DataBase {
   };
 
   static addProfile = (profile: IProfile, callback: (success: boolean) => void) => {
-
-    console.log('iniciar a transaction');
     this.validateConnection();
 
     const {
@@ -45,11 +43,12 @@ export default class DataBase {
       height,
       age,
       gender,
+      language,
       activityFactor,
       createdAt
     } = profile;
 
-    const sqlToRun = 'INSERT INTO profile(name, phrase, weight, height, age, gender, activityFactor, createdAt) VALUES (?,?,?,?,?,?,?,?)';
+    const sqlToRun = 'INSERT INTO profile(name, phrase, weight, height, age, gender, language, activityFactor, createdAt) VALUES (?,?,?,?,?,?,?,?,?)';
 
     const sqlValues = [
       name,
@@ -58,6 +57,7 @@ export default class DataBase {
       height,
       age,
       gender,
+      language,
       activityFactor,
       createdAt
     ];
@@ -69,6 +69,50 @@ export default class DataBase {
         });
     });
   };
+
+  static updateProfile = (profile: IProfile, callback: (success: boolean) => void) => {
+    this.validateConnection();
+
+    const {
+      id,
+      name,
+      phrase,
+      weight,
+      height,
+      age,
+      gender,
+      language,
+      activityFactor,
+    } = profile;
+
+    const sqlToRun = `UPDATE profile
+      SET name=?,
+      phrase=?,
+      weight=?,
+      height=?,
+      age=?,
+      gender=?,
+      language=?,
+      activityFactor=? WHERE id=?`;
+
+    const sqlValues = [
+      name,
+      phrase,
+      weight,
+      height,
+      age,
+      gender,
+      language,
+      activityFactor,
+      id,
+    ];
+
+    this.db.transaction(tx => {
+      tx.executeSql(sqlToRun, sqlValues, (_, results) => {
+        callback(results.rowsAffected > 0);
+      });
+    });
+  }
 
   static truncateProfile = () => {
     this.db.transaction(tx => {
