@@ -4,5 +4,5 @@ import Colors from '../../Colors';
 export const CustomSubtitle = styled.Text`
   font-family: 'Open Sans Regular';
   font-size: 15px;
-  color: ${Colors.Primary};
+  color: ${Colors.TextPrimary};
 `;
