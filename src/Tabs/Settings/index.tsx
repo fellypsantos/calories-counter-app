@@ -93,9 +93,9 @@ export default function () {
         return false;
       }
 
-      if (isNaN(weight)) throw new Error('Corrija o peso.');
-      if (isNaN(height)) throw new Error('Corrija a altura.');
-      if (isNaN(age)) throw new Error('Corrija a idade.');
+      if (isNaN(weight)) throw new Error(Translate('Settings.Validations.Weight'));
+      if (isNaN(height)) throw new Error(Translate('Settings.Validations.Height'));
+      if (isNaN(age)) throw new Error(Translate('Settings.Validations.Age'));
 
       const newProfileRegistrationData: IProfile = {
         ...profile,

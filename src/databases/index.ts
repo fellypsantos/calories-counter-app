@@ -1,5 +1,4 @@
 import SQLite, { SQLiteDatabase } from 'react-native-sqlite-storage';
-import { Alert } from 'react-native';
 import { IProfile } from '../interfaces/IProfile';
 
 export default class DataBase {
@@ -9,10 +8,6 @@ export default class DataBase {
     if (!this.db) {
       this.db = SQLite.openDatabase({ name: 'appDB', createFromLocation: '~database.sqlite' },
         () => { console.log('DATABASE SUCCESSFULLY OPENED!'); },
-        err => {
-          console.warn('err', err);
-          Alert.alert('Ops!', 'Falha ao abrir o banco de dados.\n');
-        },
       );
     }
     return this.db;
