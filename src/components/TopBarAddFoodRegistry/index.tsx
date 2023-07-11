@@ -1,17 +1,33 @@
+import { useMemo } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import { ButtonAddFoodRegistry, Container, PhraseRegistryCount } from "./styles";
 import Icon from '@expo/vector-icons/FontAwesome5';
 import Colors from "../../Colors";
+import { useAppTranslation } from "../../hooks/translation";
 
 export default function TopBarAddFoodRegistry() {
   const navigation = useNavigation();
-  const foodHistoryLength = 0;
+  const { Translate, selectedLanguage } = useAppTranslation();
+  const foodHistoryLength = 1;
+
+  const registryCountMessage = useMemo(() => {
+
+    const translatedCountTemplate = Translate('CountTotalMealsRegistered');
+
+    const registryWord = foodHistoryLength === 1
+      ? Translate('RegistrySingular')
+      : Translate('RegistryPlural');
+
+    const replacedTemplate = translatedCountTemplate
+      .replace('**COUNT**', foodHistoryLength.toString())
+      .replace('**REGISTRY**', registryWord);
+
+    return replacedTemplate;
+  }, [selectedLanguage]);
 
   return (
     <Container>
-      <PhraseRegistryCount>
-        {foodHistoryLength === 0 ? 'Cadastre uma refeição.' : 'Já foram anotados 2 registros hoje.'}
-      </PhraseRegistryCount>
+      <PhraseRegistryCount>{registryCountMessage}</PhraseRegistryCount>
 
       <ButtonAddFoodRegistry
         onPress={() => navigation.navigate('AddFoodRegistry')}>
