@@ -2,12 +2,14 @@ import { createContext, useMemo, useContext, useState, useEffect, useCallback } 
 import { IProfile } from '../interfaces/IProfile';
 import DataBase from '../databases';
 import dayjs from 'dayjs';
+import { useAppTranslation } from './translation';
 
 interface IProfileContext {
   profile: IProfile,
   loadingProfile: boolean;
   setProfile(profile: IProfile): void;
   addProfile(profile: IProfile): void;
+  updateProfile(profile: IProfile): void;
 }
 
 interface IProps {
@@ -18,6 +20,7 @@ const ProfileContext = createContext<IProfileContext | null>(null);
 
 const ProfileProvider = ({ children }: IProps) => {
 
+  const { setCurrentLanguage, selectedLanguage } = useAppTranslation();
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [profile, setProfile] = useState<IProfile>({
     name: '',
@@ -27,6 +30,7 @@ const ProfileProvider = ({ children }: IProps) => {
     weight: 65,
     height: 165,
     activityFactor: 1.2,
+    language: selectedLanguage,
     createdAt: null,
   });
 
@@ -34,7 +38,11 @@ const ProfileProvider = ({ children }: IProps) => {
 
     DataBase.getProfileData(profile => {
 
-      if (profile) setProfile(profile);
+      if (profile) {
+        setProfile(profile);
+        setCurrentLanguage(profile.language);
+      }
+
       setLoadingProfile(false);
     });
   }, []);
@@ -42,12 +50,12 @@ const ProfileProvider = ({ children }: IProps) => {
   const addProfile = useCallback((newProfile: IProfile) => {
 
     const profile = { ...newProfile, createdAt: dayjs().toISOString() };
+    DataBase.addProfile(profile, () => setProfile(profile));
+  }, [profile]);
 
-    DataBase.addProfile(profile, (success) => {
-      console.log(newProfile);
-      console.log('addProfile:', success ? '✅' : '❌');
-      setProfile(profile);
-    });
+  const updateProfile = useCallback((editedProfile: IProfile) => {
+
+    DataBase.updateProfile(editedProfile, () => { });
 
   }, [profile]);
 
@@ -55,9 +63,10 @@ const ProfileProvider = ({ children }: IProps) => {
     profile,
     setProfile,
     addProfile,
-    loadingProfile
+    loadingProfile,
+    updateProfile
   }),
-    [profile, setProfile, addProfile, loadingProfile]);
+    [profile, setProfile, addProfile, loadingProfile, updateProfile]);
 
   return <ProfileContext.Provider value={contextValues}>
     {children}
