@@ -1,5 +1,6 @@
-import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { getLocales } from 'expo-localization';
 
 interface ITranslationContext {
   Translate(key: string): string;
@@ -15,10 +16,17 @@ const TranslationContext = createContext<ITranslationContext | null>(null);
 
 const TranslationProvider = ({ children }: IProps) => {
   const { t: Translate, i18n } = useTranslation();
+  const [selectedLanguage, setSelectedLanguage] = useState(getLocales()[0].languageCode);
 
-  const selectedLanguage = useMemo(() => i18n.language, [i18n.language]);
+  const setCurrentLanguage = useCallback((languageKey: string) => {
+    i18n.changeLanguage(languageKey);
+    setSelectedLanguage(languageKey);
+  }, []);
 
-  const setCurrentLanguage = useCallback((languageKey: string) => i18n.changeLanguage(languageKey), []);
+  useEffect(() => {
+
+    setCurrentLanguage(selectedLanguage);
+  }, []);
 
   const contextValue = useMemo(
     () => ({ Translate, selectedLanguage, setCurrentLanguage }),
