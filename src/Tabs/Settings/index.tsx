@@ -16,12 +16,11 @@ import Picker from "../../components/Picker";
 import Colors from "../../Colors";
 import { ButtonsContainer, Container, MainView } from "./styles";
 import Toaster from "../../Toaster";
-import DataBase from "../../databases";
 import { BottomTabNavigationProps } from "../../routes/BottomTabs";
 
 export default function () {
-  const { Translate, selectedLanguage } = useAppTranslation();
-  const { profile, setProfile, addProfile, loadingProfile } = useProfile();
+  const { Translate, selectedLanguage, setCurrentLanguage } = useAppTranslation();
+  const { profile, setProfile, addProfile, updateProfile, loadingProfile } = useProfile();
 
   const navigation = useNavigation<BottomTabNavigationProps>();
 
@@ -68,6 +67,12 @@ export default function () {
     },
   ]), [selectedLanguage]);
 
+  const languageOptions = useMemo(() => ([
+    { label: 'Português', value: 'pt' },
+    { label: 'English', value: 'en' },
+    { label: 'Spañol', value: 'es' },
+  ]), [selectedLanguage]);
+
   const [currentActivityFactor, setCurrentActivityFactor] = useState(profile.activityFactor);
 
   const handleUpdateProfileField = (field: string, value: string | number) => {
@@ -97,16 +102,17 @@ export default function () {
       if (isNaN(height)) throw new Error(Translate('Settings.Validations.Height'));
       if (isNaN(age)) throw new Error(Translate('Settings.Validations.Age'));
 
-      const newProfileRegistrationData: IProfile = {
+      const formProfileData: IProfile = {
         ...profile,
         age: parseInt(age.toString(), 10),
         height: parseInt(height.toString(), 10),
         weight: parseFloat(weight.toString()),
-        activityFactor: currentActivityFactor
+        activityFactor: currentActivityFactor,
+        language: selectedLanguage,
       }
 
       if (!profile.createdAt) {
-        addProfile(newProfileRegistrationData);
+        addProfile(formProfileData);
 
         navigation.dispatch(CommonActions.reset({
           index: 1,
@@ -114,7 +120,10 @@ export default function () {
         }));
       }
 
-      else navigation.navigate('Home');
+      else {
+        updateProfile(formProfileData);
+        navigation.navigate('Home');
+      }
 
       Toaster.ShowToast({ text: Translate('Toast.InformationsUpdated') });
     }
@@ -123,11 +132,30 @@ export default function () {
       Alert.alert(Translate('Alert.Warning'), error.message);
     }
 
-  }, [profile, currentActivityFactor]);
+  }, [profile, currentActivityFactor, selectedLanguage]);
+
+  const handleChangeLanguage = useCallback((language: string) => {
+
+    setCurrentLanguage(language);
+    Toaster.ShowToast({ text: Translate('Settings.Language.DontForgetToSave'), position: 'CENTER' });
+  }, [selectedLanguage]);
 
   return (
     <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
       <Container>
+        <MainView>
+          <Icon name="language" size={40} color={Colors.Primary} />
+          <MainTitle>{Translate('Settings.Language.Title')}</MainTitle>
+          <Subtitle>{Translate('Settings.Language.Description')}</Subtitle>
+
+          <Picker
+            label={Translate('Settings.Language.ChooseLanguage')}
+            selectedValue={selectedLanguage}
+            onValueChange={(value) => handleChangeLanguage(value as string)}
+            items={languageOptions}
+          />
+        </MainView>
+
         {
           !loadingProfile && (
             <MainView>
@@ -138,7 +166,7 @@ export default function () {
               <TextInputCustom
                 label={formLabelTranslated.name}
                 value={profile.name}
-                placeholder="Jhon Doe"
+                placeholder={Translate('Settings.Placeholder.Name')}
                 onChange={(text) => handleUpdateProfileField('name', text)}
                 handlePressIcon={() => handleUpdateProfileField('name', '')}
               />
@@ -146,7 +174,7 @@ export default function () {
               <TextInputCustom
                 label={formLabelTranslated.phrase}
                 value={profile.phrase}
-                placeholder="Keep strong and focused!"
+                placeholder={Translate('Settings.Placeholder.ProfilePhrase')}
                 onChange={text => handleUpdateProfileField('phrase', text)}
                 handlePressIcon={() => handleUpdateProfileField('phrase', '')}
                 autoCorrect={false}
