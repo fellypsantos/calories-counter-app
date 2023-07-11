@@ -1,83 +1,118 @@
-import { useState } from "react";
-import { KeyboardAvoidingView } from "react-native";
-import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import { KeyboardAvoidingView, Text } from "react-native";
+import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import dayjs from "dayjs";
 import Icon from '@expo/vector-icons/FontAwesome5';
 
-import { AppSection, CloseIconBox, Container, HeaderIcons } from "./styles";
+import { AppSection, ButtonsContainer, CloseIconBox, Container, FormContainer, HeaderIcons } from "./styles";
 import Colors from "../../Colors";
 import MainTitle from "../../components/MainTitle";
+import { useNavigation } from "@react-navigation/native";
+import ButtonDefault from "../../components/ButtonDefault";
+import { useAppTranslation } from "../../hooks/translation";
+import Subtitle from "../../components/Subtitle";
+import FormLabelControl from "../../components/FormLabelControl";
+import FoodCategorySelector from "../../components/FoodCategorySelector";
+import TextInputCustom from "../../components/TextInputCustom";
+
+import 'dayjs/locale/pt';
+import 'dayjs/locale/en';
+import 'dayjs/locale/es';
+
+dayjs.extend(require('dayjs/plugin/localizedFormat'));
 
 export default function AddFoodRegistry() {
-  const [show, setShow] = useState(false);
+
+  const navigation = useNavigation();
+  const { Translate, selectedLanguage } = useAppTranslation();
+
+  const [foodName, setFoodName] = useState('');
+  const [foodKcal, setFoodKcal] = useState('');
+  const [foodCategory, setFoodCategory] = useState();
+  const [currentDate, setCurrentDate] = useState(dayjs());
+  const [editableItem, setEditableItem] = useState(null);
+
+  const formLabelTranslated = useMemo(() => ({
+    whatDoYouEat: Translate('NewRegistry.Fields.WhatDoYouEat'),
+    howManyCalories: Translate('NewRegistry.Fields.HowManyCalories'),
+  }), [selectedLanguage]);
+
+  const handleOpenTimePicker = useCallback(() => {
+    DateTimePickerAndroid.open({
+      value: new Date(),
+      onChange,
+      mode: 'time',
+      is24Hour: true,
+    });
+  }, []);
+
+  const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    if (event.type === 'set') {
+      if (selectedDate !== undefined) {
+        setCurrentDate(dayjs(selectedDate));
+      }
+    }
+  };
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
       <Container>
         <AppSection>
-          {/* DATE PICKER */}
-          {show && (
-            <DateTimePickerAndroid
-              value={dayjs(currentDate).toDate()}
-              mode="time"
-              onChange={onChange}
-            />
-          )}
           <HeaderIcons>
             <Icon name="utensils" size={40} color={Colors.Primary} />
-            <CloseIconBox onPress={handleClose}>
+            <CloseIconBox onPress={() => navigation.goBack()}>
               <Icon name="times-circle" size={18} color="#666" />
             </CloseIconBox>
           </HeaderIcons>
-
           <MainTitle>
-            {editableItem === undefined
-              ? Translator('NewRegistry.New.Title')
-              : Translator('NewRegistry.Edit.Title')}
+            {editableItem === null
+              ? Translate('NewRegistry.New.Title')
+              : Translate('NewRegistry.Edit.Title')}
           </MainTitle>
           <Subtitle>
-            {editableItem === undefined
-              ? Translator('NewRegistry.New.Description')
-              : Translator('NewRegistry.Edit.Description')}
+            {editableItem === null
+              ? Translate('NewRegistry.New.Description')
+              : Translate('NewRegistry.Edit.Description')}
           </Subtitle>
 
           <FormContainer>
-            <FormLabelControl
-              text={Translator('NewRegistry.Fields.WhichCategory')}
-            />
-            <FoodCategorySelector
-              arrOptions={FoodCategoryOptions}
-              handleChange={newValue => setFoodCategory(newValue)}
-            />
+            <FormLabelControl text={Translate('NewRegistry.Fields.WhichCategory')} />
+
+            <FoodCategorySelector handleChange={() => { }} />
 
             <TextInputCustom
               value={foodName}
-              label={labelWhatDoYouEat}
+              label={formLabelTranslated.whatDoYouEat}
               placeholder="Ex: Strogonoff"
               onChange={text => setFoodName(text)}
-              handleIconFunction={() => setFoodName('')}
+              handlePressIcon={() => setFoodName('')}
             />
 
             <TextInputCustom
               value={foodKcal}
-              label={labelHowManyCalories}
+              label={formLabelTranslated.howManyCalories}
               placeholder="Ex: 294"
               keyboardType="numeric"
               onChange={text => setFoodKcal(text)}
-              handleIconFunction={() => setFoodKcal('')}
+              handlePressIcon={() => setFoodKcal('')}
             />
 
             <TextInputCustom
-              label={Translator('NewRegistry.Fields.WhichMoment')}
-              value={dayjs(currentDate).locale('pt').format('LT')}
+              label={Translate('NewRegistry.Fields.WhichMoment')}
+              value={dayjs(currentDate).locale(selectedLanguage).format('LT')}
               renderAsDateTimePicker
-              handleIconFunction={() => setShow(true)}
+              handlePressIcon={handleOpenTimePicker}
+              onChange={() => null}
             />
 
             <ButtonsContainer>
               <ButtonDefault
-                text={Translator('Buttons.SaveRegistry')}
-                onPress={handleSaveFoodRegistry}
+                text={Translate('Buttons.SaveRegistry')}
+                onPress={() => {
+
+
+
+                }}
               />
             </ButtonsContainer>
           </FormContainer>
