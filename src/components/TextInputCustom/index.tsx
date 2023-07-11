@@ -12,7 +12,7 @@ import FormLabelControl from '../FormLabelControl';
 
 interface ITextInputCustom {
   value: string;
-  placeholder: string;
+  placeholder?: string;
   keyboardType?: KeyboardTypeOptions;
   label: string;
   renderAsDateTimePicker?: boolean;
