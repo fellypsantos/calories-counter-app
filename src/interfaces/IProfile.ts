@@ -1,4 +1,5 @@
 export interface IProfile {
+  id?: string;
   name: string;
   phrase: string;
   weight: number;
@@ -6,5 +7,6 @@ export interface IProfile {
   age: number;
   gender: string;
   activityFactor: number;
+  language: string;
   createdAt: string | null;
 }
