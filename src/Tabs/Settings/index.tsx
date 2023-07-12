@@ -15,7 +15,7 @@ import Picker from "../../components/Picker";
 
 import Colors from "../../Colors";
 import { ButtonsContainer, Container, MainView } from "./styles";
-import Toaster from "../../Toaster";
+import Toaster from "../../Utils/Toaster";
 import { BottomTabNavigationProps } from "../../routes/BottomTabs";
 
 export default function () {
