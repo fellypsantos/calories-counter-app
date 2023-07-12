@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Container, MainContainer, TheIcon, TheLabel, TouchableContainer } from "./styles";
 import { useAppTranslation } from '../../hooks/translation';
 
-interface IFoodCategoryItem {
+export interface IFoodCategoryItem {
   id: number;
   label: string;
   icon: string;
@@ -10,16 +10,16 @@ interface IFoodCategoryItem {
 }
 
 interface IFoodCategorySelectorProps {
-  handleChange(int: number): void;
+  options: IFoodCategoryItem[];
+  handleChange(categoryId: number): void;
 }
 
-export default function FoodCategorySelector({ handleChange }: IFoodCategorySelectorProps) {
-  const { Translate, selectedLanguage } = useAppTranslation();
+export default function FoodCategorySelector({ options, handleChange }: IFoodCategorySelectorProps) {
 
-  const [foodCategories, setFoodCategories] = useState<IFoodCategoryItem[]>();
+  const [listOptions, setListOptions] = useState<IFoodCategoryItem[]>(options);
 
   const handleUpdateOptions = (item: IFoodCategoryItem) => {
-    const updatedOptions = foodCategories?.map(checkbox => {
+    const updatedOptions = listOptions.map(checkbox => {
       if (checkbox.id === item.id) {
         return {
           ...checkbox,
@@ -34,35 +34,13 @@ export default function FoodCategorySelector({ handleChange }: IFoodCategorySele
     });
 
     handleChange(item.id);
-    setFoodCategories(updatedOptions);
+    setListOptions(updatedOptions);
   };
 
-  useEffect(() => {
-    setFoodCategories([
-      {
-        id: 1,
-        label: Translate('Food.Category.Light'),
-        icon: 'smile',
-        checked: false,
-      },
-      {
-        id: 2,
-        label: Translate('Food.Category.Moderate'),
-        icon: 'exclamation-triangle',
-        checked: false,
-      },
-      {
-        id: 3,
-        label: Translate('Food.Category.Heavy'),
-        icon: 'sad-tear',
-        checked: false,
-      },
-    ]);
-  }, [selectedLanguage]);
 
   return (
     <MainContainer>
-      {foodCategories?.map(item => (
+      {listOptions.map(item => (
         <TouchableContainer
           onPress={() => handleUpdateOptions(item)}
           key={item.id}
