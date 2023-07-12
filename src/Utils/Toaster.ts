@@ -1,4 +1,4 @@
-import { ToastAndroid, ToastAndroidStatic } from 'react-native';
+import { ToastAndroid } from 'react-native';
 
 interface IToastProps {
   text: string;
