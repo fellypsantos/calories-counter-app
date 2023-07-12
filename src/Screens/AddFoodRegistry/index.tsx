@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { KeyboardAvoidingView, Text } from "react-native";
+import { Alert, KeyboardAvoidingView } from "react-native";
 import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import dayjs from "dayjs";
 import Icon from '@expo/vector-icons/FontAwesome5';
@@ -12,12 +12,13 @@ import ButtonDefault from "../../components/ButtonDefault";
 import { useAppTranslation } from "../../hooks/translation";
 import Subtitle from "../../components/Subtitle";
 import FormLabelControl from "../../components/FormLabelControl";
-import FoodCategorySelector from "../../components/FoodCategorySelector";
+import FoodCategorySelector, { IFoodCategoryItem } from "../../components/FoodCategorySelector";
 import TextInputCustom from "../../components/TextInputCustom";
 
 import 'dayjs/locale/pt';
 import 'dayjs/locale/en';
 import 'dayjs/locale/es';
+import { IFoodRecord } from "../../interfaces/IFoodRecord";
 
 dayjs.extend(require('dayjs/plugin/localizedFormat'));
 
@@ -26,16 +27,41 @@ export default function AddFoodRegistry() {
   const navigation = useNavigation();
   const { Translate, selectedLanguage } = useAppTranslation();
 
-  const [foodName, setFoodName] = useState('');
-  const [foodKcal, setFoodKcal] = useState('');
-  const [foodCategory, setFoodCategory] = useState();
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [editableItem, setEditableItem] = useState(null);
+
+  const [foodRecord, setFoodRecord] = useState<IFoodRecord>({
+    name: '',
+    categoryLevel: 0,
+    kcal: 0,
+    timestamp: currentDate.toISOString(),
+  });
 
   const formLabelTranslated = useMemo(() => ({
     whatDoYouEat: Translate('NewRegistry.Fields.WhatDoYouEat'),
     howManyCalories: Translate('NewRegistry.Fields.HowManyCalories'),
   }), [selectedLanguage]);
+
+  const foodCategories = useMemo<IFoodCategoryItem[]>(() => ([
+    {
+      id: 1,
+      label: Translate('Food.Category.Light'),
+      icon: 'smile',
+      checked: false,
+    },
+    {
+      id: 2,
+      label: Translate('Food.Category.Moderate'),
+      icon: 'exclamation-triangle',
+      checked: false,
+    },
+    {
+      id: 3,
+      label: Translate('Food.Category.Heavy'),
+      icon: 'sad-tear',
+      checked: false,
+    },
+  ]), [selectedLanguage]);
 
   const handleOpenTimePicker = useCallback(() => {
     DateTimePickerAndroid.open({
@@ -50,12 +76,37 @@ export default function AddFoodRegistry() {
     if (event.type === 'set') {
       if (selectedDate !== undefined) {
         setCurrentDate(dayjs(selectedDate));
+        setFoodRecord({ ...foodRecord, timestamp: dayjs(selectedDate).toString() });
       }
     }
   };
 
+  const handleUpdateFoodRecordField = (field: string, value: string | number) => {
+    setFoodRecord({ ...foodRecord, [field]: value });
+  }
+
+  const handleSaveFoodRecord = useCallback(() => {
+
+    const fieldsWithError = [];
+
+    if (foodRecord.categoryLevel === 0) fieldsWithError.push(Translate('Food.Category.FullLabelAllTypes'));
+    if (!foodRecord.name) fieldsWithError.push(formLabelTranslated.whatDoYouEat);
+    if (!foodRecord.kcal) fieldsWithError.push(formLabelTranslated.howManyCalories);
+
+    if (fieldsWithError.length > 0) {
+      Alert.alert(
+        Translate('Alert.Warning'),
+        `${Translate('Alert.Message.NeedFillTheFields')}\n\n${fieldsWithError.join('\n')}`,
+      );
+
+      return false;
+    }
+
+    console.log('to save', foodRecord);
+  }, [foodRecord, currentDate]);
+
   return (
-    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+    <KeyboardAvoidingView behavior="height" keyboardVerticalOffset={50} style={{ flex: 1 }}>
       <Container>
         <AppSection>
           <HeaderIcons>
@@ -78,23 +129,25 @@ export default function AddFoodRegistry() {
           <FormContainer>
             <FormLabelControl text={Translate('NewRegistry.Fields.WhichCategory')} />
 
-            <FoodCategorySelector handleChange={() => { }} />
+            <FoodCategorySelector
+              options={foodCategories}
+              handleChange={(categoryId) => handleUpdateFoodRecordField('categoryLevel', categoryId)} />
 
             <TextInputCustom
-              value={foodName}
+              value={foodRecord.name}
               label={formLabelTranslated.whatDoYouEat}
               placeholder="Ex: Strogonoff"
-              onChange={text => setFoodName(text)}
-              handlePressIcon={() => setFoodName('')}
+              onChange={text => handleUpdateFoodRecordField('name', text as string)}
+              handlePressIcon={() => handleUpdateFoodRecordField('name', '')}
             />
 
             <TextInputCustom
-              value={foodKcal}
+              value={foodRecord.kcal > 0 ? foodRecord.kcal.toString() : ''}
               label={formLabelTranslated.howManyCalories}
               placeholder="Ex: 294"
               keyboardType="numeric"
-              onChange={text => setFoodKcal(text)}
-              handlePressIcon={() => setFoodKcal('')}
+              onChange={text => handleUpdateFoodRecordField('kcal', text as string)}
+              handlePressIcon={() => handleUpdateFoodRecordField('kcal', '')}
             />
 
             <TextInputCustom
@@ -106,14 +159,7 @@ export default function AddFoodRegistry() {
             />
 
             <ButtonsContainer>
-              <ButtonDefault
-                text={Translate('Buttons.SaveRegistry')}
-                onPress={() => {
-
-
-
-                }}
-              />
+              <ButtonDefault text={Translate('Buttons.SaveRegistry')} onPress={handleSaveFoodRecord} />
             </ButtonsContainer>
           </FormContainer>
         </AppSection>
