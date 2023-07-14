@@ -1,5 +1,6 @@
 import SQLite, { SQLiteDatabase } from 'react-native-sqlite-storage';
 import { IProfile } from '../interfaces/IProfile';
+import { IFoodRecord } from '../interfaces/IFoodRecord';
 
 export default class DataBase {
   static db: SQLiteDatabase;
@@ -121,4 +122,48 @@ export default class DataBase {
       });
     });
   }
+
+  static getFoodHistory = (dateISO8061: string, callback: (foodHistoryResult: IFoodRecord[]) => void) => {
+    this.validateConnection();
+
+    this.db.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM food_registry WHERE date(timestamp) = date(?) ORDER BY id DESC',
+        [dateISO8061],
+        (_, results) => {
+          if (results.rows.length > 0) {
+            callback(results.rows.raw());
+          }
+
+          else callback([]);
+        },
+      );
+    });
+  };
+
+  static addFoodRecord = (foodRecord: IFoodRecord, callback: (newFoodRecord: IFoodRecord | null) => void) => {
+    this.validateConnection();
+
+    const { name, kcal, categoryLevel, timestamp } = foodRecord;
+
+    const sqlValues = [name, kcal, categoryLevel, timestamp];
+
+    const query = 'INSERT INTO food_registry(name, kcal, categoryLevel, timestamp) VALUES(?,?,?,?)';
+
+    this.db.transaction(tx => {
+      tx.executeSql(query, sqlValues, (_, results) => {
+        if (results.rowsAffected > 0) {
+          const newFoodRecord = {
+            id: results.insertId,
+            ...foodRecord,
+          };
+
+          callback(newFoodRecord);
+        }
+
+        else callback(null);
+      },
+      );
+    });
+  };
 }
