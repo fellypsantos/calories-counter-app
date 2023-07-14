@@ -1,5 +1,5 @@
 export interface IFoodRecord {
-  id?: string;
+  id?: number;
   name: string;
   categoryLevel: number;
   kcal: number;
