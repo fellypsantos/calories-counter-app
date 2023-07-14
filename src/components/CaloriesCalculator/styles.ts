@@ -1,3 +1,4 @@
+import { RectButton } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 import Colors from '../../Colors';
 
@@ -7,7 +8,7 @@ interface IBlockPosition {
 
 const getBorderWidth = (isMiddle?: boolean) => isMiddle ? '1px' : '0px';
 
-export const Container = styled.View`
+export const Container = styled(RectButton)`
   flex-direction: row;
   margin-top: 25px;
   margin-bottom: 25px;
