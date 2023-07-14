@@ -10,6 +10,7 @@ interface IProfileContext {
   setProfile(profile: IProfile): void;
   addProfile(profile: IProfile): void;
   updateProfile(profile: IProfile): void;
+  basalMetabolicExpenditure: number;
 }
 
 interface IProps {
@@ -26,9 +27,9 @@ const ProfileProvider = ({ children }: IProps) => {
     name: '',
     phrase: '',
     gender: 'M',
-    age: 26,
-    weight: 65,
-    height: 165,
+    age: 0,
+    weight: 0,
+    height: 0,
     activityFactor: 1.2,
     language: selectedLanguage,
     createdAt: null,
@@ -59,14 +60,33 @@ const ProfileProvider = ({ children }: IProps) => {
 
   }, [profile]);
 
+  const basalMetabolicExpenditure = useMemo<number>(() => {
+
+    const { weight, height, age, gender, activityFactor } = profile;
+
+    const calc = gender === 'M'
+      ? 13.75 * weight + 5 * height - 6.76 * age + 66.5
+      : 9.56 * weight + 1.85 * height - 4.68 * age + 665;
+
+    return Math.round(calc * activityFactor);
+  }, [profile]);
+
   const contextValues = useMemo(() => ({
     profile,
     setProfile,
     addProfile,
     loadingProfile,
-    updateProfile
+    updateProfile,
+    basalMetabolicExpenditure
   }),
-    [profile, setProfile, addProfile, loadingProfile, updateProfile]);
+    [
+      profile,
+      setProfile,
+      addProfile,
+      loadingProfile,
+      updateProfile,
+      basalMetabolicExpenditure
+    ]);
 
   return <ProfileContext.Provider value={contextValues}>
     {children}
