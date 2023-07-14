@@ -13,7 +13,7 @@ export default function CaloriesCalculator() {
 
       <ContainerKcalInfo isMiddle>
         <KcalValue isMiddle>{caloriesIngested}</KcalValue>
-        <KcalLabel>(KCal)</KcalLabel>
+        <KcalLabel>(Kcal)</KcalLabel>
       </ContainerKcalInfo>
 
       <ContainerKcalInfo>
