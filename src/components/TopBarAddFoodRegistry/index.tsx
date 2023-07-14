@@ -4,22 +4,23 @@ import { ButtonAddFoodRegistry, Container, PhraseRegistryCount } from "./styles"
 import Icon from '@expo/vector-icons/FontAwesome5';
 import Colors from "../../Colors";
 import { useAppTranslation } from "../../hooks/translation";
+import { useFoodRecord } from '../../hooks/food';
 
 export default function TopBarAddFoodRegistry() {
   const navigation = useNavigation();
   const { Translate, selectedLanguage } = useAppTranslation();
-  const foodHistoryLength = 1;
+  const { foodHistory } = useFoodRecord();
 
   const registryCountMessage = useMemo(() => {
 
     const translatedCountTemplate = Translate('CountTotalMealsRegistered');
 
-    const registryWord = foodHistoryLength === 1
+    const registryWord = foodHistory.length === 1
       ? Translate('RegistrySingular')
       : Translate('RegistryPlural');
 
     const replacedTemplate = translatedCountTemplate
-      .replace('**COUNT**', foodHistoryLength.toString())
+      .replace('**COUNT**', foodHistory.length.toString())
       .replace('**REGISTRY**', registryWord);
 
     return replacedTemplate;
