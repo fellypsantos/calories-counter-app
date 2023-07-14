@@ -24,7 +24,7 @@ export default function TopBarAddFoodRegistry() {
       .replace('**REGISTRY**', registryWord);
 
     return replacedTemplate;
-  }, [selectedLanguage]);
+  }, [selectedLanguage, foodHistory]);
 
   return (
     <Container>
