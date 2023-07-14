@@ -27,9 +27,9 @@ const FoodProvider = ({ children }: IProps) => {
     }));
   }, [foodHistory]);
 
-  const caloriesIngested = useMemo(() => {
+  const caloriesIngested = useMemo<number>(() => {
 
-    return foodHistory.reduce((sum: number, foodRecord) => sum + foodRecord.kcal, 0)
+    return foodHistory.reduce((sum: number, foodRecord) => sum + foodRecord.kcal, 0);
   }, [foodHistory]);
 
   useEffect(() => {
