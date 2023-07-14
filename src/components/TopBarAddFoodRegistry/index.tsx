@@ -28,7 +28,11 @@ export default function TopBarAddFoodRegistry() {
 
   return (
     <Container>
-      <PhraseRegistryCount>{registryCountMessage}</PhraseRegistryCount>
+      <PhraseRegistryCount>
+        {foodHistory.length === 0
+          ? Translate('CountTotalMealsEmpty')
+          : registryCountMessage}
+      </PhraseRegistryCount>
 
       <ButtonAddFoodRegistry
         onPress={() => navigation.navigate('AddFoodRegistry')}>
