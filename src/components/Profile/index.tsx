@@ -10,7 +10,7 @@ export default function Profile() {
   return (
     <Container>
       <ProfilePictureContainer>
-        <ProfilePicture source={profilePictureMale} />
+        <ProfilePicture source={profile.gender === 'M' ? profilePictureMale : profilePictureFemale} />
       </ProfilePictureContainer>
       <Name>{profile.name}</Name>
       <Phrase>{profile.phrase}</Phrase>
