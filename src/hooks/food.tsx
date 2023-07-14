@@ -6,6 +6,7 @@ import Time from '../Utils/Time';
 
 interface IFoodContext {
   foodHistory: IFoodRecord[];
+  caloriesIngested: number;
   addFoodRecord(foodRecord: IFoodRecord): void;
 }
 
@@ -26,6 +27,11 @@ const FoodProvider = ({ children }: IProps) => {
     }));
   }, [foodHistory]);
 
+  const caloriesIngested = useMemo(() => {
+
+    return foodHistory.reduce((sum: number, foodRecord) => sum + foodRecord.kcal, 0)
+  }, [foodHistory]);
+
   useEffect(() => {
 
     DataBase.getFoodHistory(Time.ISO8601Format(dayjs()), (foodHistoryResult) => {
@@ -35,9 +41,9 @@ const FoodProvider = ({ children }: IProps) => {
   }, []);
 
   const contextValues = useMemo(() => ({
-    foodHistory, addFoodRecord
+    foodHistory, addFoodRecord, caloriesIngested
 
-  }), [foodHistory, addFoodRecord]);
+  }), [foodHistory, addFoodRecord, caloriesIngested]);
 
   return (
     <ProfileContext.Provider value={contextValues}>

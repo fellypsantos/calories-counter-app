@@ -1,6 +1,9 @@
+import { useFoodRecord } from "../../hooks/food";
 import { Container, ContainerKcalInfo, KcalLabel, KcalValue } from "./styles";
 
 export default function CaloriesCalculator() {
+  const { caloriesIngested } = useFoodRecord();
+
   return (
     <Container>
       <ContainerKcalInfo>
@@ -9,8 +12,8 @@ export default function CaloriesCalculator() {
       </ContainerKcalInfo>
 
       <ContainerKcalInfo isMiddle>
-        <KcalValue isMiddle>0</KcalValue>
-        <KcalLabel>0 (KCal)</KcalLabel>
+        <KcalValue isMiddle>{caloriesIngested}</KcalValue>
+        <KcalLabel>(KCal)</KcalLabel>
       </ContainerKcalInfo>
 
       <ContainerKcalInfo>
