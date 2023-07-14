@@ -182,7 +182,7 @@ export default function () {
 
               <TextInputCustom
                 label={formLabelTranslated.weight}
-                value={profile.weight?.toString()}
+                value={profile.weight > 0 ? profile.weight?.toString() : ''}
                 placeholder="50"
                 keyboardType="numeric"
                 onChange={text => handleUpdateProfileField('weight', text.replace(',', '.'))}
@@ -192,7 +192,7 @@ export default function () {
 
               <TextInputCustom
                 label={formLabelTranslated.height}
-                value={profile.height?.toString()}
+                value={profile.height > 0 ? profile.height?.toString() : ''}
                 placeholder="165"
                 keyboardType="numeric"
                 onChange={text => handleUpdateProfileField('height', text)}
@@ -202,7 +202,7 @@ export default function () {
 
               <TextInputCustom
                 label={formLabelTranslated.age}
-                value={profile.age?.toString()}
+                value={profile.age > 0 ? profile.age?.toString() : ''}
                 placeholder="26"
                 keyboardType="numeric"
                 onChange={text => handleUpdateProfileField('age', text)}
@@ -225,9 +225,7 @@ export default function () {
               />
 
               <Subtitle>
-                {currentActivityFactor === undefined
-                  ? activityFactorOptions[0].description
-                  : activityFactorOptions.find(item => item.value === currentActivityFactor)?.description}
+                {activityFactorOptions.find(item => item.value === currentActivityFactor)?.description}
               </Subtitle>
 
               <ButtonsContainer>
