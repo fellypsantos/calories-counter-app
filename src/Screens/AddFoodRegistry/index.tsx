@@ -159,7 +159,7 @@ export default function AddFoodRegistry() {
               label={formLabelTranslated.howManyCalories}
               placeholder="Ex: 294"
               keyboardType="numeric"
-              onChange={text => handleUpdateFoodRecordField('kcal', text as string)}
+              onChange={text => handleUpdateFoodRecordField('kcal', parseInt(text, 10))}
               handlePressIcon={() => handleUpdateFoodRecordField('kcal', '')}
             />
 
