@@ -1,3 +1,4 @@
+import { FoodProvider } from "./food";
 import { ProfileProvider } from "./profile";
 import { TranslationProvider } from "./translation";
 
@@ -9,7 +10,9 @@ export default function AppProvider({ children }: AppProviderProps) {
   return (
     <TranslationProvider>
       <ProfileProvider>
-        {children}
+        <FoodProvider>
+          {children}
+        </FoodProvider>
       </ProfileProvider>
     </TranslationProvider>
   )
