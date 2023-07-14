@@ -1,6 +1,12 @@
+import dayjs from "dayjs";
 import Colors from "../../Colors";
+import { IFoodRecord } from "../../interfaces/IFoodRecord";
 import { Container, FoodInfo, FoodName, IconContainer, IconImage, RegistryDataContainer } from "./styles";
 import Icon from '@expo/vector-icons/FontAwesome5';
+import { useAppTranslation } from "../../hooks/translation";
+
+const localizedFormat = require('dayjs/plugin/localizedFormat');
+dayjs.extend(localizedFormat);
 
 const TimeIcons = {
   sunrise: require('../../../assets/images/sunrise.png'),
@@ -8,7 +14,16 @@ const TimeIcons = {
   moon: require('../../../assets/images/moon.png'),
 };
 
-export default function FoodRegistryListItem() {
+interface IProps {
+  foodRecord: IFoodRecord;
+}
+
+export default function FoodRegistryListItem({ foodRecord }: IProps) {
+
+  const { selectedLanguage } = useAppTranslation();
+
+  const { id, name, kcal, categoryLevel, timestamp } = foodRecord;
+
   return (
     <Container>
       <IconContainer>
@@ -16,12 +31,11 @@ export default function FoodRegistryListItem() {
       </IconContainer>
 
       <RegistryDataContainer>
-        <FoodName>Churrasco</FoodName>
-        <FoodInfo>Alimentação Pesada | 12h30</FoodInfo>
-        <FoodInfo>540 kcal</FoodInfo>
+        <FoodName>{name}</FoodName>
+        <FoodInfo>Alimentação Pesada | {dayjs(timestamp).locale(selectedLanguage).format('LT')}</FoodInfo>
+        <FoodInfo>{kcal} kcal</FoodInfo>
       </RegistryDataContainer>
 
-      {/* smile | exclamation-triangle | sad-tear */}
       <Icon name='smile' size={20} color={Colors.Primary} />
     </Container>
   )
