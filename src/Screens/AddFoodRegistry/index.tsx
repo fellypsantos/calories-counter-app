@@ -1,8 +1,9 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Alert, KeyboardAvoidingView } from "react-native";
 import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import dayjs from "dayjs";
 import Icon from '@expo/vector-icons/FontAwesome5';
+import { useCalendars } from 'expo-localization';
 
 import { AppSection, ButtonsContainer, CloseIconBox, Container, FormContainer, HeaderIcons } from "./styles";
 import Colors from "../../Colors";
@@ -19,13 +20,18 @@ import 'dayjs/locale/pt';
 import 'dayjs/locale/en';
 import 'dayjs/locale/es';
 import { IFoodRecord } from "../../interfaces/IFoodRecord";
+import Time from "../../Utils/Time";
+import { useFoodRecord } from "../../hooks/food";
 
 dayjs.extend(require('dayjs/plugin/localizedFormat'));
 
 export default function AddFoodRegistry() {
 
   const navigation = useNavigation();
+  const use24HClock = useCalendars()[0].uses24hourClock || false;
   const { Translate, selectedLanguage } = useAppTranslation();
+
+  const { addFoodRecord } = useFoodRecord();
 
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [editableItem, setEditableItem] = useState(null);
@@ -63,20 +69,20 @@ export default function AddFoodRegistry() {
     },
   ]), [selectedLanguage]);
 
-  const handleOpenTimePicker = useCallback(() => {
+  const handleOpenTimePicker = () => {
     DateTimePickerAndroid.open({
       value: new Date(),
       onChange,
       mode: 'time',
-      is24Hour: true,
+      is24Hour: use24HClock,
     });
-  }, []);
+  }
 
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (event.type === 'set') {
       if (selectedDate !== undefined) {
         setCurrentDate(dayjs(selectedDate));
-        setFoodRecord({ ...foodRecord, timestamp: dayjs(selectedDate).toString() });
+        setFoodRecord({ ...foodRecord, timestamp: Time.ISO8601Format(selectedDate) });
       }
     }
   };
@@ -102,7 +108,14 @@ export default function AddFoodRegistry() {
       return false;
     }
 
-    console.log('to save', foodRecord);
+    if (!foodRecord.id) {
+      addFoodRecord(foodRecord);
+      navigation.goBack();
+    }
+
+    else {
+      // update existing record by id
+    }
   }, [foodRecord, currentDate]);
 
   return (
