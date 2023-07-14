@@ -1,13 +1,15 @@
 import { useFoodRecord } from "../../hooks/food";
+import { useProfile } from "../../hooks/profile";
 import { Container, ContainerKcalInfo, KcalLabel, KcalValue } from "./styles";
 
 export default function CaloriesCalculator() {
+  const { basalMetabolicExpenditure } = useProfile();
   const { caloriesIngested } = useFoodRecord();
 
   return (
     <Container>
       <ContainerKcalInfo>
-        <KcalValue>0</KcalValue>
+        <KcalValue>1200</KcalValue>
         <KcalLabel>Min</KcalLabel>
       </ContainerKcalInfo>
 
@@ -17,7 +19,7 @@ export default function CaloriesCalculator() {
       </ContainerKcalInfo>
 
       <ContainerKcalInfo>
-        <KcalValue>0</KcalValue>
+        <KcalValue>{basalMetabolicExpenditure}</KcalValue>
         <KcalLabel>Max</KcalLabel>
       </ContainerKcalInfo>
     </Container>
