@@ -11,14 +11,13 @@ import CallToAction from "../../components/CallToAction";
 import FoodRegistryListItem from "../../components/FoodRegistryListItem";
 
 import { useAppTranslation } from '../../hooks/translation';
+import { useFoodRecord } from "../../hooks/food";
 
 export default function Dashboard() {
 
   const { Translate } = useAppTranslation();
 
-  const theFoodHistory = [{ id: 1 }, { id: 2 }];
-
-  const isEmptyFoodList = theFoodHistory.length == 0;
+  const { foodHistory } = useFoodRecord();
 
   return (
     <ScrollViewContainer>
@@ -30,11 +29,11 @@ export default function Dashboard() {
 
       <BottomContainer>
         <TopBarAddFoodRegistry />
-        <NoFoodRegistry hidden={!isEmptyFoodList} />
+        <NoFoodRegistry hidden={foodHistory.length !== 0} />
         <ListContainer>
-          {theFoodHistory.map(item => (
+          {foodHistory.map(item => (
             <ListItemTouchable key={item.id} onPress={() => null}>
-              <FoodRegistryListItem />
+              <FoodRegistryListItem key={item.id} foodRecord={item} />
             </ListItemTouchable>
           ))}
         </ListContainer>
