@@ -11,16 +11,17 @@ export interface IFoodCategoryItem {
 
 interface IFoodCategorySelectorProps {
   options: IFoodCategoryItem[];
+  initialCategoryLevel?: number;
   handleChange(categoryId: number): void;
 }
 
-export default function FoodCategorySelector({ options, handleChange }: IFoodCategorySelectorProps) {
+export default function FoodCategorySelector({ options, initialCategoryLevel, handleChange }: IFoodCategorySelectorProps) {
 
   const [listOptions, setListOptions] = useState<IFoodCategoryItem[]>(options);
 
-  const handleUpdateOptions = (item: IFoodCategoryItem) => {
+  const refreshUI = (categoryId: number) => {
     const updatedOptions = listOptions.map(checkbox => {
-      if (checkbox.id === item.id) {
+      if (checkbox.id === categoryId) {
         return {
           ...checkbox,
           checked: !checkbox.checked,
@@ -33,10 +34,20 @@ export default function FoodCategorySelector({ options, handleChange }: IFoodCat
       };
     });
 
-    handleChange(item.id);
     setListOptions(updatedOptions);
+  }
+
+  const handleUpdateOptions = (item: IFoodCategoryItem) => {
+    refreshUI(item.id);
+    handleChange(item.id);
   };
 
+  useEffect(() => {
+
+    if (initialCategoryLevel !== undefined && initialCategoryLevel > 0) {
+      refreshUI(initialCategoryLevel);
+    }
+  }, []);
 
   return (
     <MainContainer>
