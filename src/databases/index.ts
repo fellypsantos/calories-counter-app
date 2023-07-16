@@ -167,6 +167,36 @@ export default class DataBase {
     });
   };
 
+  static updateFoodRegistry = (foodRecord: IFoodRecord, callback: (success: boolean) => void) => {
+    this.validateConnection();
+
+    const {
+      id,
+      name,
+      kcal,
+      categoryLevel,
+      timestamp
+    } = foodRecord;
+
+    const sqlData = [
+      name,
+      kcal,
+      categoryLevel,
+      timestamp,
+      id,
+    ];
+
+    this.db.transaction(tx => {
+      tx.executeSql(
+        'UPDATE food_registry SET name=?, kcal=?, categoryLevel=?, timestamp=? WHERE id=?',
+        sqlData,
+        (_, results) => {
+          callback(results.rowsAffected == 1)
+        },
+      );
+    });
+  };
+
   static deleteFoodRegistry = (foodRecord: IFoodRecord, callback: (success: boolean) => void) => {
     this.validateConnection();
 
