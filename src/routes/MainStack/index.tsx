@@ -7,13 +7,8 @@ import BottomTabs from '../BottomTabs';
 export type RootStackParamList = {
   SplashScreen: undefined;
   EntryPoint: undefined;
-  AddFoodRegistry: undefined;
   Settings: undefined;
 };
-
-export interface PageProps {
-  navigation: NativeStackNavigationProp<RootStackParamList>;
-}
 
 export type StackNavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
