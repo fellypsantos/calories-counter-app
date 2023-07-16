@@ -11,6 +11,7 @@ interface IFoodContext {
   caloriesIngested: number;
   caloriesIngestedInDate: number;
   addFoodRecord(foodRecord: IFoodRecord): void;
+  deleteFoodRecord(foodRecord: IFoodRecord): void;
   loadFoodHistoryFromDate(date: Dayjs): void;
 }
 
@@ -37,6 +38,17 @@ const FoodProvider = ({ children }: IProps) => {
         setFoodHistoryFromDate(updatedList);
       }
     }));
+  }, [foodHistory]);
+
+  const deleteFoodRecord = useCallback((foodRecord: IFoodRecord) => {
+
+    DataBase.deleteFoodRegistry(foodRecord, (success) => {
+      if (success) {
+        const updatedFoodRecordList = foodHistory.filter(food => food.id !== foodRecord.id);
+        setFoodHistory(updatedFoodRecordList);
+        setFoodHistoryFromDate(updatedFoodRecordList);
+      }
+    });
   }, [foodHistory]);
 
   const loadFoodHistoryFromDate = (date: Dayjs) => {
@@ -73,7 +85,8 @@ const FoodProvider = ({ children }: IProps) => {
     foodHistoryFromDate,
     loadFoodHistoryFromDate,
     loadingFoodHistoryFromDate,
-    caloriesIngestedInDate
+    caloriesIngestedInDate,
+    deleteFoodRecord
 
   }), [foodHistory,
     addFoodRecord,
@@ -81,7 +94,8 @@ const FoodProvider = ({ children }: IProps) => {
     foodHistoryFromDate,
     loadFoodHistoryFromDate,
     loadingFoodHistoryFromDate,
-    caloriesIngestedInDate]);
+    caloriesIngestedInDate,
+    deleteFoodRecord]);
 
   return (
     <ProfileContext.Provider value={contextValues}>
