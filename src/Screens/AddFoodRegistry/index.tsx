@@ -20,8 +20,8 @@ import 'dayjs/locale/pt';
 import 'dayjs/locale/en';
 import 'dayjs/locale/es';
 import { IFoodRecord } from "../../interfaces/IFoodRecord";
-import Time from "../../Utils/Time";
 import { useFoodRecord } from "../../hooks/food";
+import Time from "../../Utils/Time";
 
 dayjs.extend(require('dayjs/plugin/localizedFormat'));
 
