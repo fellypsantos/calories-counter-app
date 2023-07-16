@@ -5,10 +5,16 @@ interface IActionButtonProps {
   showAsCancel?: boolean;
 }
 
-export const Container = styled.ScrollView`
+export const Container = styled.View`
   flex: 1;
   background-color: #fff;
 `;
+
+export const Scroll = styled.ScrollView.attrs({
+  contentContainerStyle: {
+    flexGrow: 1,
+  }
+})``;
 
 export const IconContainer = styled.View`
   align-items: center;
