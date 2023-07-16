@@ -5,9 +5,10 @@ import Icon from '@expo/vector-icons/FontAwesome5';
 import Colors from "../../Colors";
 import { useAppTranslation } from "../../hooks/translation";
 import { useFoodRecord } from '../../hooks/food';
+import { StackNavigationProps } from '../../Tabs/Home';
 
 export default function TopBarAddFoodRegistry() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProps>();
   const { Translate, selectedLanguage } = useAppTranslation();
   const { foodHistory } = useFoodRecord();
 
