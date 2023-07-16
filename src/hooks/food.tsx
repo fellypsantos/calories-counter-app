@@ -11,6 +11,7 @@ interface IFoodContext {
   caloriesIngested: number;
   caloriesIngestedInDate: number;
   addFoodRecord(foodRecord: IFoodRecord): void;
+  updateFoodRecord(foodRecord: IFoodRecord): void;
   deleteFoodRecord(foodRecord: IFoodRecord): void;
   loadFoodHistoryFromDate(date: Dayjs): void;
 }
@@ -33,11 +34,27 @@ const FoodProvider = ({ children }: IProps) => {
 
     DataBase.addFoodRecord(foodRecord, (addedFoodRecord => {
       if (addedFoodRecord) {
-        const updatedList = [addedFoodRecord, ...foodHistory];
-        setFoodHistory(updatedList);
-        setFoodHistoryFromDate(updatedList);
+        const updatedFoodRecordList = [addedFoodRecord, ...foodHistory];
+        setFoodHistory(updatedFoodRecordList);
+        setFoodHistoryFromDate(updatedFoodRecordList);
       }
     }));
+  }, [foodHistory]);
+
+  const updateFoodRecord = useCallback((foodRecord: IFoodRecord) => {
+
+    DataBase.updateFoodRegistry(foodRecord, success => {
+
+      if (success) {
+        const updatedFoodRecordList = foodHistory.map(foodItem => {
+          if (foodItem.id === foodRecord.id) return foodRecord;
+          else return foodItem;
+        });
+
+        setFoodHistory(updatedFoodRecordList);
+        setFoodHistoryFromDate(updatedFoodRecordList);
+      }
+    })
   }, [foodHistory]);
 
   const deleteFoodRecord = useCallback((foodRecord: IFoodRecord) => {
@@ -81,21 +98,23 @@ const FoodProvider = ({ children }: IProps) => {
   const contextValues = useMemo(() => ({
     foodHistory,
     addFoodRecord,
+    deleteFoodRecord,
+    updateFoodRecord,
     caloriesIngested,
     foodHistoryFromDate,
     loadFoodHistoryFromDate,
     loadingFoodHistoryFromDate,
     caloriesIngestedInDate,
-    deleteFoodRecord
-
   }), [foodHistory,
     addFoodRecord,
+    deleteFoodRecord,
+    updateFoodRecord,
     caloriesIngested,
     foodHistoryFromDate,
     loadFoodHistoryFromDate,
     loadingFoodHistoryFromDate,
     caloriesIngestedInDate,
-    deleteFoodRecord]);
+  ]);
 
   return (
     <ProfileContext.Provider value={contextValues}>
