@@ -1,8 +1,10 @@
 import { useFoodRecord } from "../../hooks/food";
 import { useProfile } from "../../hooks/profile";
+import { useAppTranslation } from "../../hooks/translation";
 import { Container, ContainerKcalInfo, KcalLabel, KcalValue } from "./styles";
 
 export default function CaloriesCalculator() {
+  const { Translate } = useAppTranslation();
   const { basalMetabolicExpenditure } = useProfile();
   const { caloriesIngested } = useFoodRecord();
 
@@ -15,7 +17,7 @@ export default function CaloriesCalculator() {
 
       <ContainerKcalInfo isMiddle>
         <KcalValue isMiddle>{caloriesIngested}</KcalValue>
-        <KcalLabel>(Kcal)</KcalLabel>
+        <KcalLabel>{Translate('Consumed')} (Kcal)</KcalLabel>
       </ContainerKcalInfo>
 
       <ContainerKcalInfo>
