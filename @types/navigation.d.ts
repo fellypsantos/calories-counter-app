@@ -3,7 +3,6 @@ import { IFoodRecord } from "../src/interfaces/IFoodRecord";
 export declare global {
   namespace ReactNavigation {
     interface RootParamList {
-      AdMobRewardIntro: undefined;
       Dashboard: undefined;
       AddFoodRegistry: { foodRecord: IFoodRecord | undefined };
       SplashScreen: undefined;
@@ -11,6 +10,7 @@ export declare global {
       Home: undefined;
       History: undefined;
       Settings: undefined
+      DisableAdsIntro: undefined;
     }
   }
 }
