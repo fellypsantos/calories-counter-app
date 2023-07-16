@@ -12,7 +12,7 @@ export default function AdIconsBar() {
       {!isPremiumTime && (
         <>
           <AdButtonBlock>
-            <TouchableOpacity onPress={() => navigation.navigate('AdMobRewardIntro')}>
+            <TouchableOpacity onPress={() => navigation.navigate('DisableAdsIntro')}>
               <Icon name="gift" color="#fff" size={25} />
             </TouchableOpacity>
           </AdButtonBlock>
