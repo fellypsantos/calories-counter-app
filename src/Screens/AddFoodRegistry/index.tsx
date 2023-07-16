@@ -16,27 +16,31 @@ import FormLabelControl from "../../components/FormLabelControl";
 import FoodCategorySelector, { IFoodCategoryItem } from "../../components/FoodCategorySelector";
 import TextInputCustom from "../../components/TextInputCustom";
 
-import 'dayjs/locale/pt';
-import 'dayjs/locale/en';
-import 'dayjs/locale/es';
 import { IFoodRecord } from "../../interfaces/IFoodRecord";
 import { useFoodRecord } from "../../hooks/food";
 import Time from "../../Utils/Time";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { SubRootStackParamList } from "../../Tabs/Home";
+
+import 'dayjs/locale/pt';
+import 'dayjs/locale/en';
+import 'dayjs/locale/es';
 
 dayjs.extend(require('dayjs/plugin/localizedFormat'));
 
-export default function AddFoodRegistry() {
+type Props = NativeStackScreenProps<SubRootStackParamList, 'AddFoodRegistry'>;
+
+export default function AddFoodRegistry({ route }: Props) {
 
   const navigation = useNavigation();
   const use24HClock = useCalendars()[0].uses24hourClock || false;
   const { Translate, selectedLanguage } = useAppTranslation();
 
-  const { addFoodRecord } = useFoodRecord();
+  const { addFoodRecord, updateFoodRecord } = useFoodRecord();
 
-  const [currentDate, setCurrentDate] = useState(dayjs());
-  const [editableItem, setEditableItem] = useState(null);
+  const [currentDate, setCurrentDate] = useState(dayjs(route.params?.foodRecord.timestamp));
 
-  const [foodRecord, setFoodRecord] = useState<IFoodRecord>({
+  const [foodRecord, setFoodRecord] = useState<IFoodRecord>(route.params?.foodRecord || {
     name: '',
     categoryLevel: 0,
     kcal: 0,
@@ -108,14 +112,10 @@ export default function AddFoodRegistry() {
       return false;
     }
 
-    if (!foodRecord.id) {
-      addFoodRecord(foodRecord);
-      navigation.goBack();
-    }
+    if (!foodRecord.id) addFoodRecord(foodRecord);
+    else updateFoodRecord(foodRecord);
 
-    else {
-      // update existing record by id
-    }
+    navigation.goBack();
   }, [foodRecord, currentDate]);
 
   return (
@@ -129,12 +129,12 @@ export default function AddFoodRegistry() {
             </CloseIconBox>
           </HeaderIcons>
           <MainTitle>
-            {editableItem === null
+            {!foodRecord?.id
               ? Translate('NewRegistry.New.Title')
               : Translate('NewRegistry.Edit.Title')}
           </MainTitle>
           <Subtitle>
-            {editableItem === null
+            {!foodRecord?.id
               ? Translate('NewRegistry.New.Description')
               : Translate('NewRegistry.Edit.Description')}
           </Subtitle>
@@ -143,6 +143,7 @@ export default function AddFoodRegistry() {
             <FormLabelControl text={Translate('NewRegistry.Fields.WhichCategory')} />
 
             <FoodCategorySelector
+              initialCategoryLevel={foodRecord.categoryLevel}
               options={foodCategories}
               handleChange={(categoryId) => handleUpdateFoodRecordField('categoryLevel', categoryId)} />
 
