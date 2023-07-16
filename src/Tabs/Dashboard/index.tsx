@@ -1,7 +1,7 @@
 import { Alert, Linking } from "react-native";
 import ScrollViewContainer from "../../components/ScrollViewContainer";
 
-import { BottomContainer, ListContainer, ListItemTouchable, TopContainer } from "./styles";
+import dayjs from "dayjs";
 import AdIconsBar from "../../components/AdIconsBar";
 import Profile from "../../components/Profile";
 import CaloriesCalculator from "../../components/CaloriesCalculator";
@@ -10,15 +10,19 @@ import NoFoodRegistry from "../../components/NoFoodRegistry";
 import CallToAction from "../../components/CallToAction";
 import FoodRegistryListItem from "../../components/FoodRegistryListItem";
 
+import { useNavigation } from "@react-navigation/native";
 import { useAppTranslation } from '../../hooks/translation';
 import { useFoodRecord } from "../../hooks/food";
 import { IFoodRecord } from "../../interfaces/IFoodRecord";
-import dayjs from "dayjs";
+
+import { BottomContainer, ListContainer, ListItemTouchable, TopContainer } from "./styles";
 
 export default function Dashboard() {
 
   const { Translate, selectedLanguage } = useAppTranslation();
   const { foodHistory, deleteFoodRecord } = useFoodRecord();
+
+  const navigation = useNavigation();
 
   const handleConfirmDeleteListItem = (foodRecord: IFoodRecord) => {
     Alert.alert(
@@ -51,7 +55,7 @@ ${Translate('Modal.Label.Hour')}: ${time.format('LT')}`,
         },
         {
           text: Translate('Modal.Button.Edit'),
-          onPress: () => null,
+          onPress: () => navigation.navigate('AddFoodRegistry', { foodRecord: item }),
         },
         { text: Translate('Modal.Button.Close'), onPress: () => { } },
       ],
