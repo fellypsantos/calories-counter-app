@@ -10,8 +10,10 @@ const getBorderWidth = (isMiddle?: boolean) => isMiddle ? '1px' : '0px';
 
 export const Container = styled(RectButton)`
   flex-direction: row;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 `;
 
 export const ContainerKcalInfo = styled.View<IBlockPosition>`
