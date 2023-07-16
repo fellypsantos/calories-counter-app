@@ -166,4 +166,17 @@ export default class DataBase {
       );
     });
   };
+
+  static deleteFoodRegistry = (foodRecord: IFoodRecord, callback: (success: boolean) => void) => {
+    this.validateConnection();
+
+    this.db.transaction(tx => {
+      tx.executeSql('DELETE FROM food_registry WHERE id=?',
+        [foodRecord.id],
+        (_, results) => {
+          callback(results.rowsAffected > 0)
+        },
+      );
+    });
+  };
 }
