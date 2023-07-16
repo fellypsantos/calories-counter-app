@@ -61,7 +61,7 @@ export default function FoodRegistryListItem({ foodRecord }: IProps) {
         <FoodInfo>{kcal} kcal</FoodInfo>
       </RegistryDataContainer>
 
-      <Icon name={categoryLevelIcon} size={20} color={Colors.Primary} />
+      <Icon name={categoryLevelIcon} size={20} color={Colors.Secondary} />
     </Container>
   )
 }
