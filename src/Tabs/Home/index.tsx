@@ -8,7 +8,7 @@ import DisableAdsIntro from '../../Screens/DisableAdsIntro';
 
 export type SubRootStackParamList = {
   Dashboard: undefined;
-  AddFoodRegistry: { foodRecord: IFoodRecord };
+  AddFoodRegistry: { foodRecord: IFoodRecord } | undefined;
   DisableAdsIntro: undefined;
 };
 
