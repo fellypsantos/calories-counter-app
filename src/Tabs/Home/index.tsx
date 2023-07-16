@@ -2,15 +2,16 @@ import { NativeStackNavigationProp, createNativeStackNavigator } from '@react-na
 
 import Dashboard from '../Dashboard';
 import AddFoodRegistry from '../../Screens/AddFoodRegistry';
+import { IFoodRecord } from '../../interfaces/IFoodRecord';
 
-export type RootStackParamList = {
+export type SubRootStackParamList = {
   Dashboard: undefined;
-  AddFoodRegistry: undefined;
+  AddFoodRegistry: { foodRecord: IFoodRecord };
 };
 
-export type StackNavigationProps = NativeStackNavigationProp<RootStackParamList>;
+export type StackNavigationProps = NativeStackNavigationProp<SubRootStackParamList>;
 
-const { Navigator, Screen } = createNativeStackNavigator<RootStackParamList>();
+const { Navigator, Screen } = createNativeStackNavigator<SubRootStackParamList>();
 
 export default function Home() {
   return (
