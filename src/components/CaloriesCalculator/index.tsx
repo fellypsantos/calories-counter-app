@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import { useFoodRecord } from "../../hooks/food";
 import { useProfile } from "../../hooks/profile";
 import { useAppTranslation } from "../../hooks/translation";
@@ -7,9 +8,10 @@ export default function CaloriesCalculator() {
   const { Translate } = useAppTranslation();
   const { basalMetabolicExpenditure } = useProfile();
   const { caloriesIngested } = useFoodRecord();
+  const navigation = useNavigation();
 
   return (
-    <Container>
+    <Container onPress={() => navigation.navigate('CuriosityContent')}>
       <ContainerKcalInfo>
         <KcalValue>1200</KcalValue>
         <KcalLabel>{Translate('Min')}</KcalLabel>
