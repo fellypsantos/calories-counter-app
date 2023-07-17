@@ -5,11 +5,13 @@ import { IFoodRecord } from '../../interfaces/IFoodRecord';
 import Dashboard from '../Dashboard';
 import AddFoodRegistry from '../../Screens/AddFoodRegistry';
 import DisableAdsIntro from '../../Screens/DisableAdsIntro';
+import CuriosityContent from '../../Screens/CuriosityContent';
 
 export type SubRootStackParamList = {
   Dashboard: undefined;
   AddFoodRegistry: { foodRecord: IFoodRecord } | undefined;
   DisableAdsIntro: undefined;
+  CuriosityContent: undefined;
 };
 
 export type StackNavigationProps = NativeStackNavigationProp<SubRootStackParamList>;
@@ -22,6 +24,7 @@ export default function Home() {
       <Screen name="Dashboard" component={Dashboard} />
       <Screen name="AddFoodRegistry" component={AddFoodRegistry} />
       <Screen name="DisableAdsIntro" component={DisableAdsIntro} />
+      <Screen name="CuriosityContent" component={CuriosityContent} />
     </Navigator>
   )
 }
