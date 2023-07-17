@@ -209,4 +209,26 @@ export default class DataBase {
       );
     });
   };
+
+  static setLastPremiumTimestamp = (timestamp: string, callback: (success: boolean) => void) => {
+    this.validateConnection();
+
+    this.db.transaction(tx => {
+      tx.executeSql('UPDATE admob SET lastRewardTimestamp=?', [timestamp],
+        (_, results) => {
+          callback(results.rowsAffected > 0);
+        },
+      );
+    });
+  }
+
+  static getLastPremiumTimestamp = (callback: (timestamp: string) => void) => {
+    this.validateConnection();
+
+    this.db.transaction(tx => {
+      tx.executeSql('SELECT lastRewardTimestamp FROM admob', undefined, (_, results) => {
+        callback(results.rows.item(0).lastRewardTimestamp);
+      });
+    });
+  };
 }
