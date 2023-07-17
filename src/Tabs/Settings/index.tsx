@@ -48,22 +48,22 @@ export default function () {
     {
       label: Translate('Settings.Options.ActivityFactor.LightActive.Title'),
       description: Translate('Settings.Options.ActivityFactor.LightActive.Description'),
-      value: 1.375,
+      value: 1.38,
     },
     {
       label: Translate('Settings.Options.ActivityFactor.ModerateActive.Title'),
       description: Translate('Settings.Options.ActivityFactor.ModerateActive.Description'),
-      value: 1.55,
+      value: 1.53,
     },
     {
       label: Translate('Settings.Options.ActivityFactor.HighlyActive.Title'),
       description: Translate('Settings.Options.ActivityFactor.HighlyActive.Description'),
-      value: 1.725,
+      value: 1.76,
     },
     {
       label: Translate('Settings.Options.ActivityFactor.ExtremelyActive.Title'),
       description: Translate('Settings.Options.ActivityFactor.ExtremelyActive.Description'),
-      value: 1.9,
+      value: 2.25,
     },
   ]), [selectedLanguage]);
 
