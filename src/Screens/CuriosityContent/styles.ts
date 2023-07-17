@@ -15,3 +15,8 @@ export const CloseIconBox = styled.TouchableOpacity`
   padding-left: 15px;
   align-self: flex-end;
 `;
+
+export const NativeBannerContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+`;
