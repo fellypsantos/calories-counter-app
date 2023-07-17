@@ -12,7 +12,7 @@ export default function CaloriesCalculator() {
     <Container>
       <ContainerKcalInfo>
         <KcalValue>1200</KcalValue>
-        <KcalLabel>Min</KcalLabel>
+        <KcalLabel>{Translate('Min')}</KcalLabel>
       </ContainerKcalInfo>
 
       <ContainerKcalInfo isMiddle>
@@ -22,7 +22,7 @@ export default function CaloriesCalculator() {
 
       <ContainerKcalInfo>
         <KcalValue>{basalMetabolicExpenditure}</KcalValue>
-        <KcalLabel>Max</KcalLabel>
+        <KcalLabel>{Translate('Max')}</KcalLabel>
       </ContainerKcalInfo>
     </Container>
   )
