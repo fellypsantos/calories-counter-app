@@ -56,7 +56,9 @@ const ProfileProvider = ({ children }: IProps) => {
 
   const updateProfile = useCallback((editedProfile: IProfile) => {
 
-    DataBase.updateProfile(editedProfile, () => { });
+    DataBase.updateProfile(editedProfile, success => {
+      if (success) setProfile(editedProfile);
+    });
 
   }, [profile]);
 
