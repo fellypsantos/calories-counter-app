@@ -67,8 +67,8 @@ const ProfileProvider = ({ children }: IProps) => {
     const { weight, height, age, gender, activityFactor } = profile;
 
     const calc = gender === 'M'
-      ? 13.75 * weight + 5 * height - 6.76 * age + 66.5
-      : 9.56 * weight + 1.85 * height - 4.68 * age + 665;
+      ? 66.5 + (13.75 * weight) + (5.003 * height) - (6.76 * age)
+      : 65.51 + (13.75 * weight) + (5.003 * height) - (6.775 * age);
 
     return Math.round(calc * activityFactor);
   }, [profile]);
