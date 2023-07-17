@@ -11,6 +11,7 @@ export declare global {
       History: undefined;
       Settings: undefined
       DisableAdsIntro: undefined;
+      CuriosityContent: undefined;
     }
   }
 }
