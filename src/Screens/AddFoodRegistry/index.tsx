@@ -125,7 +125,7 @@ export default function AddFoodRegistry({ route }: Props) {
           <HeaderIcons>
             <Icon name="utensils" size={40} color={Colors.Primary} />
             <CloseIconBox onPress={() => navigation.goBack()}>
-              <Icon name="times-circle" size={18} color="#666" />
+              <Icon name="times-circle" size={20} color="#666" />
             </CloseIconBox>
           </HeaderIcons>
           <MainTitle>
