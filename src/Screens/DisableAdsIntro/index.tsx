@@ -2,8 +2,16 @@ import { useRef, useState, useEffect } from 'react';
 import { ActivityIndicator } from 'react-native';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import Icon from '@expo/vector-icons/FontAwesome5';
+import dayjs from 'dayjs';
 
 import { useRewardedAd } from 'react-native-google-mobile-ads';
+import { useNavigation } from '@react-navigation/native';
+import { useAppTranslation } from '../../hooks/translation';
+import { usePremium } from '../../hooks/premium';
+
+import Colors from '../../Colors';
+import AdUnits from '../../AdUnits';
+import Toaster from '../../Utils/Toaster';
 
 import {
   Container,
@@ -16,12 +24,6 @@ import {
   Scroll,
 } from './styles';
 
-import { useAppTranslation } from '../../hooks/translation';
-import { useNavigation } from '@react-navigation/native';
-import Colors from '../../Colors';
-import AdUnits from '../../AdUnits';
-import Toaster from '../../Utils/Toaster';
-import { usePremium } from '../../hooks/premium';
 
 export default function DisableAdsIntro() {
 
@@ -30,7 +32,7 @@ export default function DisableAdsIntro() {
 
   const { load, isLoaded, show, isEarnedReward } = useRewardedAd(AdUnits.RerwardedTempDisableAds);
   const { Translate } = useAppTranslation();
-  const { enablePremiumTime } = usePremium();
+  const { enablePremiumTime, isPremiumTime } = usePremium();
 
   const navigation = useNavigation();
 
@@ -44,7 +46,7 @@ export default function DisableAdsIntro() {
   useEffect(() => {
 
     if (isEarnedReward) {
-      enablePremiumTime();
+      enablePremiumTime(dayjs());
       confettiCannon.current?.start();
     }
   }, [isEarnedReward]);
@@ -84,15 +86,19 @@ export default function DisableAdsIntro() {
               {Translate('Buttons.Back')}
             </ActionButtonText>
           </ActionButton>
-          {isLoadingAd ? (
-            <ActivityIndicator color={Colors.Primary} size={25} style={{ paddingLeft: 30 }} />
-          ) : (
-            <ActionButton onPress={handleShowRewardAd}>
-              <ActionButtonText>
-                {Translate('Buttons.DisableNow')}
-              </ActionButtonText>
-            </ActionButton>
-          )}
+          {
+            isLoadingAd && <ActivityIndicator color={Colors.Primary} size={25} style={{ paddingLeft: 30 }} />
+          }
+
+          {
+            !isPremiumTime && !isLoadingAd && (
+              <ActionButton onPress={handleShowRewardAd}>
+                <ActionButtonText>
+                  {Translate('Buttons.DisableNow')}
+                </ActionButtonText>
+              </ActionButton>
+            )
+          }
         </ButtonsContainer>
 
       </Container>
