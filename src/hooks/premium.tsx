@@ -1,37 +1,63 @@
+import dayjs from 'dayjs';
 import React, { createContext, useContext, useMemo, useState, useEffect } from 'react';
+import DataBase from '../databases';
+import Time from '../Utils/Time';
 
 interface IPremiumContext {
   isPremiumTime: boolean;
-  enablePremiumTime(): void;
-  disablePremiumTime(): void;
+  enablePremiumTime(timestamp: dayjs.Dayjs): void;
 }
 
 interface IProps {
   children: React.ReactNode;
 }
 
+const MAX_MINUTES_PREMIUM_TIME: number = 240;
+
 const PremiumContext = createContext<IPremiumContext | null>(null);
 
 const PremiumProvider = ({ children }: IProps) => {
 
   const [isPremiumTime, setIsPremiumTime] = useState(false);
+  const [timer, setTimer] = useState<number | null>(null);
 
-  const enablePremiumTime = () => { }
+  const enablePremiumTime = (timestamp: dayjs.Dayjs) => {
 
-  const disablePremiumTime = () => { }
+    DataBase.setLastPremiumTimestamp(Time.ISO8601Format(timestamp), success => {
+      if (success) setIsPremiumTime(true);
+    });
+  }
 
-  useEffect(() => { }, []); // check premium expiration every minute
+  const executePremiumTimeVerification = () => {
+    DataBase.getLastPremiumTimestamp((timestamp) => {
+      const minutesPassed = dayjs().diff(timestamp, 'minutes');
+      setIsPremiumTime(minutesPassed < MAX_MINUTES_PREMIUM_TIME);
+    });
+  }
+
+  useEffect(() => {
+
+    executePremiumTimeVerification();
+
+    if (isPremiumTime && timer === null) {
+      const interval = setInterval(executePremiumTimeVerification, 1000);
+      setTimer(interval);
+    }
+
+    else if (!isPremiumTime && timer !== null) {
+      clearInterval(timer);
+      setTimer(null);
+    }
+  }, [isPremiumTime, timer]);
 
   const contextValue = useMemo(
     () => ({
       isPremiumTime,
       enablePremiumTime,
-      disablePremiumTime
     }),
     [
       isPremiumTime,
       enablePremiumTime,
-      disablePremiumTime
     ],
   );
 
