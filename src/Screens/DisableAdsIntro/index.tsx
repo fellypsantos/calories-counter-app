@@ -73,12 +73,27 @@ export default function DisableAdsIntro() {
         />
 
         <IconContainer>
-          <Icon name="ad" color={Colors.TextPrimary} size={40} />
+          <Icon name={isPremiumTime ? 'check-circle' : 'ad'} color={Colors.TextPrimary} size={40} />
         </IconContainer>
 
-        <Title>{Translate('AdMob.Title.DisableAds')}</Title>
-        <Subtitle>{Translate('AdMob.Paragraph1')}</Subtitle>
-        <Subtitle>{Translate('AdMob.Paragraph2')}</Subtitle>
+        {
+          !isPremiumTime && (
+            <>
+              <Title>{Translate('AdMob.Title.DisableAds')}</Title>
+              <Subtitle>{Translate('AdMob.Paragraph1')}</Subtitle>
+              <Subtitle>{Translate('AdMob.Paragraph2')}</Subtitle>
+            </>
+          )
+        }
+
+        {
+          isPremiumTime && (
+            <>
+              <Title>{Translate('AdMob.PremiumEnabled.Title')}</Title>
+              <Subtitle>{Translate('AdMob.PremiumEnabled.Message')}</Subtitle>
+            </>
+          )
+        }
 
         <ButtonsContainer>
           <ActionButton showAsCancel onPress={() => navigation.goBack()}>
