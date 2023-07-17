@@ -15,7 +15,7 @@ export const Title = styled.Text`
 `;
 
 export const MainText = styled.Text`
-  background-color: #ddd;
+  background-color: #efefef;
   padding: 10px;
   font-family: 'Open Sans Regular';
   border-radius: 0px 0px 6px 6px;
