@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import mobileAds from 'react-native-google-mobile-ads';
 import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
@@ -16,10 +16,11 @@ Database.open();
 mobileAds()
   .initialize()
   .then(adapterStatuses => {
-    console.log('Google Ads Loaded.');
+    if (__DEV__) console.log('Google Ads Loaded.');
   });
 
 export default function App() {
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={{ flex: 1, paddingTop: 20 }}>

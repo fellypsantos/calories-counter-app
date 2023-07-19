@@ -14,7 +14,6 @@ export const HeaderIcons = styled.View`
 `;
 
 export const CloseIconBox = styled.TouchableOpacity`
-  color: red;
   padding-left: 15px;
 `;
 

@@ -1,7 +1,12 @@
 import styled from 'styled-components/native';
 import Colors from '../../Colors';
 
-export const Container = styled.View`
+interface IProfileProps {
+  useMarginTop: boolean;
+}
+
+export const Container = styled.View<IProfileProps>`
+  margin-top: ${props => props.useMarginTop ? '45px' : '0px'};
   align-items: center;
 `;
 
