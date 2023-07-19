@@ -37,6 +37,7 @@ const FoodProvider = ({ children }: IProps) => {
         const updatedFoodRecordList = [addedFoodRecord, ...foodHistory];
         setFoodHistory(updatedFoodRecordList);
         setFoodHistoryFromDate(updatedFoodRecordList);
+        setCaloriesIngestedInDate(calculateCaloriesIngested(updatedFoodRecordList));
       }
     }));
   }, [foodHistory]);
