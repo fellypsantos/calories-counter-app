@@ -59,4 +59,15 @@ export default class FoodRepository implements IFoodRepository {
       }, (error) => reject(error.message))
     });
   }
+
+  deleteFoodRegistry(foodRecord: IFoodRecord): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.database.transaction(tx => {
+        tx.executeSql('DELETE FROM food_registry WHERE id=?',
+          [foodRecord.id],
+          (_, results) => resolve(results.rowsAffected > 0),
+        );
+      }, (error) => reject(error.message));
+    });
+  }
 }
