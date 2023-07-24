@@ -1,5 +1,4 @@
 import SQLite, { SQLiteDatabase } from 'react-native-sqlite-storage';
-import { IProfile } from '../interfaces/IProfile';
 import { IFoodRecord } from '../interfaces/IFoodRecord';
 
 export default class DataBase {
@@ -24,14 +23,6 @@ export default class DataBase {
   static validateConnection = () => {
     if (!this.db) throw new Error("Database connection is closed.");
   };
-
-  static truncateProfile = () => {
-    this.db.transaction(tx => {
-      tx.executeSql('DELETE FROM profile', undefined, () => {
-        console.log('✅ PROFILE TABLE CLEARED');
-      });
-    });
-  }
 
   static getFoodHistory = (dateISO8061: string, callback: (foodHistoryResult: IFoodRecord[]) => void) => {
     this.validateConnection();
