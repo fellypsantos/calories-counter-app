@@ -3,6 +3,7 @@ import { IFoodRecord } from '../interfaces/IFoodRecord';
 import DataBase from '../databases';
 import dayjs, { Dayjs } from 'dayjs';
 import Time from '../Utils/Time';
+import FoodService from '../services/FoodService';
 
 interface IFoodContext {
   foodHistory: IFoodRecord[];
@@ -30,54 +31,55 @@ const FoodProvider = ({ children }: IProps) => {
   const [foodHistoryFromDate, setFoodHistoryFromDate] = useState<IFoodRecord[]>([]);
   const [caloriesIngestedInDate, setCaloriesIngestedInDate] = useState(0);
 
-  const addFoodRecord = useCallback((foodRecord: IFoodRecord) => {
+  const foodService = useMemo(() => new FoodService(), []);
 
-    DataBase.addFoodRecord(foodRecord, (addedFoodRecord => {
-      if (addedFoodRecord) {
-        const updatedFoodRecordList = [addedFoodRecord, ...foodHistory];
-        setFoodHistory(updatedFoodRecordList);
-        setFoodHistoryFromDate(updatedFoodRecordList);
-        setCaloriesIngestedInDate(calculateCaloriesIngested(updatedFoodRecordList));
-      }
-    }));
+  const addFoodRecord = useCallback(async (foodRecord: IFoodRecord) => {
+
+    const addedFoodRecord = await foodService.addFoodRecord(foodRecord);
+
+    if (addedFoodRecord) {
+      const updatedFoodRecordList = [addedFoodRecord, ...foodHistory];
+      setFoodHistory(updatedFoodRecordList);
+      setFoodHistoryFromDate(updatedFoodRecordList);
+      setCaloriesIngestedInDate(calculateCaloriesIngested(updatedFoodRecordList));
+    }
   }, [foodHistory]);
 
-  const updateFoodRecord = useCallback((foodRecord: IFoodRecord) => {
+  const updateFoodRecord = useCallback(async (foodRecord: IFoodRecord) => {
 
-    DataBase.updateFoodRegistry(foodRecord, success => {
+    const success = await foodService.updateFoodRegistry(foodRecord);
 
-      if (success) {
-        const updatedFoodRecordList = foodHistory.map(foodItem => {
-          if (foodItem.id === foodRecord.id) return foodRecord;
-          else return foodItem;
-        });
+    if (success) {
+      const updatedFoodRecordList = foodHistory.map(foodItem => {
+        if (foodItem.id === foodRecord.id) return foodRecord;
+        else return foodItem;
+      });
 
-        setFoodHistory(updatedFoodRecordList);
-        setFoodHistoryFromDate(updatedFoodRecordList);
-      }
-    })
+      setFoodHistory(updatedFoodRecordList);
+      setFoodHistoryFromDate(updatedFoodRecordList);
+    }
   }, [foodHistory]);
 
-  const deleteFoodRecord = useCallback((foodRecord: IFoodRecord) => {
+  const deleteFoodRecord = useCallback(async (foodRecord: IFoodRecord) => {
 
-    DataBase.deleteFoodRegistry(foodRecord, (success) => {
-      if (success) {
-        const updatedFoodRecordList = foodHistory.filter(food => food.id !== foodRecord.id);
-        setFoodHistory(updatedFoodRecordList);
-        setFoodHistoryFromDate(updatedFoodRecordList);
-      }
-    });
+    const success = await foodService.deleteFoodRegistry(foodRecord);
+
+    if (success) {
+      const updatedFoodRecordList = foodHistory.filter(food => food.id !== foodRecord.id);
+      setFoodHistory(updatedFoodRecordList);
+      setFoodHistoryFromDate(updatedFoodRecordList);
+      setCaloriesIngestedInDate(calculateCaloriesIngested(updatedFoodRecordList));
+    }
   }, [foodHistory]);
 
-  const loadFoodHistoryFromDate = (date: Dayjs) => {
+  const loadFoodHistoryFromDate = async (date: Dayjs) => {
     setLoadingFoodHistoryFromDate(true);
 
-    DataBase.getFoodHistory(Time.ISO8601Format(date), foodHistoryResult => {
+    const foodHistoryResult = await foodService.getFoodHistory(Time.ISO8601Format(date));
 
-      setFoodHistoryFromDate(foodHistoryResult);
-      setCaloriesIngestedInDate(calculateCaloriesIngested(foodHistoryResult));
-      setLoadingFoodHistoryFromDate(false);
-    });
+    setFoodHistoryFromDate(foodHistoryResult);
+    setCaloriesIngestedInDate(calculateCaloriesIngested(foodHistoryResult));
+    setLoadingFoodHistoryFromDate(false);
   }
 
   const calculateCaloriesIngested = (foodHistory: IFoodRecord[]) => {
@@ -88,8 +90,7 @@ const FoodProvider = ({ children }: IProps) => {
 
   useEffect(() => {
 
-    DataBase.getFoodHistory(Time.ISO8601Format(dayjs()), (foodHistoryResult) => {
-
+    foodService.getFoodHistory(Time.ISO8601Format(dayjs())).then(foodHistoryResult => {
       setFoodHistory(foodHistoryResult);
       setFoodHistoryFromDate(foodHistoryResult);
       setCaloriesIngestedInDate(calculateCaloriesIngested(foodHistoryResult));

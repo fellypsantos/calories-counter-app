@@ -1,5 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
-import { ActivityIndicator } from "react-native";
+import { useEffect, useState } from 'react';
 import { AppDescription, AppLogo, AppStart, AppStartText, AppTitle, Container } from "./styles";
 
 import { useAppTranslation } from "../../hooks/translation";
@@ -7,6 +6,7 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { useProfile } from '../../hooks/profile';
 
 import AppLogoSource from '../../../assets/images/eating.png';
+import FullScreenLoading from '../../components/FullScreenLoading';
 
 export default function () {
   const { Translate } = useAppTranslation();
@@ -31,7 +31,7 @@ export default function () {
 
   return (
     <Container>
-      {loading ? <ActivityIndicator color="#FFF" size={25} /> : (
+      {loading ? <FullScreenLoading /> : (
         <>
           <AppTitle>{Translate('App.Name')}</AppTitle>
           <AppLogo source={AppLogoSource} />

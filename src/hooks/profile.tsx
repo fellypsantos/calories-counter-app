@@ -1,8 +1,10 @@
+import dayjs from 'dayjs';
 import { createContext, useMemo, useContext, useState, useEffect, useCallback } from 'react';
 import { IProfile } from '../interfaces/IProfile';
-import DataBase from '../databases';
-import dayjs from 'dayjs';
 import { useAppTranslation } from './translation';
+import ProfileService from '../services/ProfileService';
+import Toaster from '../Utils/Toaster';
+
 
 interface IProfileContext {
   profile: IProfile,
@@ -21,7 +23,7 @@ const ProfileContext = createContext<IProfileContext | null>(null);
 
 const ProfileProvider = ({ children }: IProps) => {
 
-  const { setCurrentLanguage, selectedLanguage } = useAppTranslation();
+  const { setCurrentLanguage, selectedLanguage, Translate } = useAppTranslation();
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [profile, setProfile] = useState<IProfile>({
     name: '',
@@ -35,31 +37,39 @@ const ProfileProvider = ({ children }: IProps) => {
     createdAt: null,
   });
 
+  const profileService = useMemo(() => new ProfileService(), []);
+
   useEffect(() => {
 
-    DataBase.getProfileData(profile => {
+    profileService.getProfileData()
+      .then(profile => {
 
-      if (profile) {
-        setProfile(profile);
-        setCurrentLanguage(profile.language);
-      }
+        if (profile) {
+          setProfile(profile);
+          setCurrentLanguage(profile.language);
+        }
 
-      setLoadingProfile(false);
-    });
+        setLoadingProfile(false);
+      })
+      .catch(() => { });
   }, []);
 
-  const addProfile = useCallback((newProfile: IProfile) => {
+  const addProfile = useCallback(async (newProfile: IProfile) => {
 
     const profile = { ...newProfile, createdAt: dayjs().toISOString() };
-    DataBase.addProfile(profile, () => setProfile(profile));
+    const success = await profileService.addProfile(profile);
+
+    if (success) setProfile(profile);
+    else Toaster.ShowToast({ text: Translate('Toast.FailedToAddProfile') });
+
   }, [profile]);
 
-  const updateProfile = useCallback((editedProfile: IProfile) => {
+  const updateProfile = useCallback(async (editedProfile: IProfile) => {
 
-    DataBase.updateProfile(editedProfile, success => {
-      if (success) setProfile(editedProfile);
-    });
+    const success = await profileService.updateProfile(editedProfile);
 
+    if (success) setProfile(editedProfile);
+    else Toaster.ShowToast({ text: Translate('Toast.FailedToUpdateProfile') });
   }, [profile]);
 
   const basalMetabolicExpenditure = useMemo<number>(() => {

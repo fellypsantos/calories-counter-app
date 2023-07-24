@@ -1,5 +1,5 @@
-import React from 'react';
-import { KeyboardTypeOptions } from 'react-native'
+import React, { forwardRef } from 'react';
+import { KeyboardTypeOptions, TextInput, TextInputProps } from 'react-native'
 
 import {
   ButtonInputHandler,
@@ -19,28 +19,32 @@ interface ITextInputCustom {
   autoCorrect?: boolean;
   onChange(text: string): void;
   handlePressIcon(): void;
+  onSubmitEditing?(): void;
 }
 
-const TextInputCustom = ({
+const TextInputCustom = forwardRef<TextInput, ITextInputCustom>(({
   value,
   placeholder,
   onChange,
   renderAsDateTimePicker,
   handlePressIcon,
+  onSubmitEditing,
   keyboardType = 'default',
   label = 'TheLabel',
   autoCorrect = false
-}: ITextInputCustom) => (
+}: ITextInputCustom, ref) => (
   <>
     <FormLabelControl text={label} />
     <Container>
       <TextInputControl
+        ref={ref}
         value={value}
         placeholder={placeholder}
         onChangeText={onChange}
         editable={!renderAsDateTimePicker}
         autoCorrect={autoCorrect}
         keyboardType={keyboardType}
+        onSubmitEditing={onSubmitEditing}
       />
 
       <ButtonInputHandler onPress={handlePressIcon}>
@@ -51,6 +55,6 @@ const TextInputCustom = ({
       </ButtonInputHandler>
     </Container>
   </>
-);
+));
 
 export default TextInputCustom;

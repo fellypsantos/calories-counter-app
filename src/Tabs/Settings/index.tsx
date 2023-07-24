@@ -1,5 +1,5 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
-import { Alert, KeyboardAvoidingView, Text } from "react-native";
+import { useState, useCallback, useMemo, useRef } from "react";
+import { Alert, KeyboardAvoidingView, TextInput } from "react-native";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/FontAwesome5';
 
@@ -21,6 +21,11 @@ import { BottomTabNavigationProps } from "../../routes/BottomTabs";
 export default function () {
   const { Translate, selectedLanguage, setCurrentLanguage } = useAppTranslation();
   const { profile, setProfile, addProfile, updateProfile, loadingProfile } = useProfile();
+
+  const ref_profilePhrase = useRef<TextInput>(null);
+  const ref_weight = useRef<TextInput>(null);
+  const ref_height = useRef<TextInput>(null);
+  const ref_age = useRef<TextInput>(null);
 
   const navigation = useNavigation<BottomTabNavigationProps>();
 
@@ -169,18 +174,22 @@ export default function () {
                 placeholder={Translate('Settings.Placeholder.Name')}
                 onChange={(text) => handleUpdateProfileField('name', text)}
                 handlePressIcon={() => handleUpdateProfileField('name', '')}
+                onSubmitEditing={() => ref_profilePhrase?.current?.focus()}
               />
 
               <TextInputCustom
+                ref={ref_profilePhrase}
                 label={formLabelTranslated.phrase}
                 value={profile.phrase}
                 placeholder={Translate('Settings.Placeholder.ProfilePhrase')}
                 onChange={text => handleUpdateProfileField('phrase', text)}
                 handlePressIcon={() => handleUpdateProfileField('phrase', '')}
                 autoCorrect={false}
+                onSubmitEditing={() => ref_weight?.current?.focus()}
               />
 
               <TextInputCustom
+                ref={ref_weight}
                 label={formLabelTranslated.weight}
                 value={profile.weight > 0 ? profile.weight?.toString() : ''}
                 placeholder="50"
@@ -188,9 +197,11 @@ export default function () {
                 onChange={text => handleUpdateProfileField('weight', text.replace(',', '.'))}
                 handlePressIcon={() => handleUpdateProfileField('weight', '')}
                 autoCorrect={false}
+                onSubmitEditing={() => ref_height?.current?.focus()}
               />
 
               <TextInputCustom
+                ref={ref_height}
                 label={formLabelTranslated.height}
                 value={profile.height > 0 ? profile.height?.toString() : ''}
                 placeholder="165"
@@ -198,9 +209,12 @@ export default function () {
                 onChange={text => handleUpdateProfileField('height', text)}
                 handlePressIcon={() => handleUpdateProfileField('height', '')}
                 autoCorrect={false}
+                onSubmitEditing={() => ref_age?.current?.focus()}
+
               />
 
               <TextInputCustom
+                ref={ref_age}
                 label={formLabelTranslated.age}
                 value={profile.age > 0 ? profile.age?.toString() : ''}
                 placeholder="26"

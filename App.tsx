@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import mobileAds from 'react-native-google-mobile-ads';
 import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
@@ -9,9 +9,8 @@ import './i18n.config';
 import Colors from './src/Colors';
 import AppProvider from './src/hooks';
 import MainStack from './src/routes/MainStack';
-import Database from './src/databases';
-
-Database.open();
+import DataBaseInit from './src/databases/DataBaseInit';
+import { TranslationProvider } from './src/hooks/translation';
 
 mobileAds()
   .initialize()
@@ -25,11 +24,15 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={{ flex: 1, paddingTop: 20 }}>
         <StatusBar backgroundColor={Colors.Primary} style='light' />
-        <AppProvider>
-          <NavigationContainer>
-            <MainStack />
-          </NavigationContainer>
-        </AppProvider>
+        <TranslationProvider>
+          <DataBaseInit>
+            <AppProvider>
+              <NavigationContainer>
+                <MainStack />
+              </NavigationContainer>
+            </AppProvider>
+          </DataBaseInit>
+        </TranslationProvider>
       </View>
     </GestureHandlerRootView>
   )
