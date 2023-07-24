@@ -44,4 +44,19 @@ export default class FoodRepository implements IFoodRepository {
       }, (error) => reject(error.message));
     });
   }
+
+  updateFoodRegistry(foodRecord: IFoodRecord): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const { id, name, kcal, categoryLevel, timestamp } = foodRecord;
+      const sqlData = [name, kcal, categoryLevel, timestamp, id];
+
+      this.database.transaction(tx => {
+        tx.executeSql(
+          'UPDATE food_registry SET name=?, kcal=?, categoryLevel=?, timestamp=? WHERE id=?',
+          sqlData,
+          (_, results) => resolve(results.rowsAffected === 1),
+        );
+      }, (error) => reject(error.message))
+    });
+  }
 }
