@@ -59,4 +59,49 @@ export default class ProfileRepository implements IProfileRepository {
       }, (error) => reject(error.message));
     });
   }
+
+  updateProfile(profile: IProfile): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+
+      const {
+        id,
+        name,
+        phrase,
+        weight,
+        height,
+        age,
+        gender,
+        language,
+        activityFactor,
+      } = profile;
+
+      const sqlToRun = `UPDATE profile
+        SET name=?,
+        phrase=?,
+        weight=?,
+        height=?,
+        age=?,
+        gender=?,
+        language=?,
+        activityFactor=? WHERE id=?`;
+
+      const sqlValues = [
+        name,
+        phrase,
+        weight,
+        height,
+        age,
+        gender,
+        language,
+        activityFactor,
+        id,
+      ];
+
+      this.database.transaction(tx => {
+        tx.executeSql(sqlToRun, sqlValues, (_, results) => {
+          resolve(results.rowsAffected > 0);
+        });
+      }, (error) => reject(error.message));
+    });
+  }
 }
