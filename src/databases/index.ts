@@ -24,32 +24,6 @@ export default class DataBase {
     if (!this.db) throw new Error("Database connection is closed.");
   };
 
-  static addFoodRecord = (foodRecord: IFoodRecord, callback: (newFoodRecord: IFoodRecord | null) => void) => {
-    this.validateConnection();
-
-    const { name, kcal, categoryLevel, timestamp } = foodRecord;
-
-    const sqlValues = [name, kcal, categoryLevel, timestamp];
-
-    const query = 'INSERT INTO food_registry(name, kcal, categoryLevel, timestamp) VALUES(?,?,?,?)';
-
-    this.db.transaction(tx => {
-      tx.executeSql(query, sqlValues, (_, results) => {
-        if (results.rowsAffected > 0) {
-          const newFoodRecord = {
-            id: results.insertId,
-            ...foodRecord,
-          };
-
-          callback(newFoodRecord);
-        }
-
-        else callback(null);
-      },
-      );
-    });
-  };
-
   static updateFoodRegistry = (foodRecord: IFoodRecord, callback: (success: boolean) => void) => {
     this.validateConnection();
 
