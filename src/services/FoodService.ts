@@ -13,4 +13,8 @@ export default class FoodService {
   async getFoodHistory(dateISO8061: string): Promise<IFoodRecord[]> {
     return await this.foodRepository.getFoodHistory(dateISO8061);
   }
+
+  async addFoodRecord(foodRecord: IFoodRecord): Promise<IFoodRecord | null> {
+    return await this.foodRepository.addFoodRecord(foodRecord);
+  }
 }
