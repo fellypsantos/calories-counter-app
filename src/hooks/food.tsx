@@ -60,15 +60,15 @@ const FoodProvider = ({ children }: IProps) => {
     }
   }, [foodHistory]);
 
-  const deleteFoodRecord = useCallback((foodRecord: IFoodRecord) => {
+  const deleteFoodRecord = useCallback(async (foodRecord: IFoodRecord) => {
 
-    DataBase.deleteFoodRegistry(foodRecord, (success) => {
-      if (success) {
-        const updatedFoodRecordList = foodHistory.filter(food => food.id !== foodRecord.id);
-        setFoodHistory(updatedFoodRecordList);
-        setFoodHistoryFromDate(updatedFoodRecordList);
-      }
-    });
+    const success = await foodService.deleteFoodRegistry(foodRecord);
+
+    if (success) {
+      const updatedFoodRecordList = foodHistory.filter(food => food.id !== foodRecord.id);
+      setFoodHistory(updatedFoodRecordList);
+      setFoodHistoryFromDate(updatedFoodRecordList);
+    }
   }, [foodHistory]);
 
   const loadFoodHistoryFromDate = async (date: Dayjs) => {
