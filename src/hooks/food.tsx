@@ -33,16 +33,16 @@ const FoodProvider = ({ children }: IProps) => {
 
   const foodService = useMemo(() => new FoodService(), []);
 
-  const addFoodRecord = useCallback((foodRecord: IFoodRecord) => {
+  const addFoodRecord = useCallback(async (foodRecord: IFoodRecord) => {
 
-    DataBase.addFoodRecord(foodRecord, (addedFoodRecord => {
-      if (addedFoodRecord) {
-        const updatedFoodRecordList = [addedFoodRecord, ...foodHistory];
-        setFoodHistory(updatedFoodRecordList);
-        setFoodHistoryFromDate(updatedFoodRecordList);
-        setCaloriesIngestedInDate(calculateCaloriesIngested(updatedFoodRecordList));
-      }
-    }));
+    const addedFoodRecord = await foodService.addFoodRecord(foodRecord);
+
+    if (addedFoodRecord) {
+      const updatedFoodRecordList = [addedFoodRecord, ...foodHistory];
+      setFoodHistory(updatedFoodRecordList);
+      setFoodHistoryFromDate(updatedFoodRecordList);
+      setCaloriesIngestedInDate(calculateCaloriesIngested(updatedFoodRecordList));
+    }
   }, [foodHistory]);
 
   const updateFoodRecord = useCallback((foodRecord: IFoodRecord) => {
