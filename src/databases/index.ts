@@ -24,24 +24,6 @@ export default class DataBase {
     if (!this.db) throw new Error("Database connection is closed.");
   };
 
-  static getFoodHistory = (dateISO8061: string, callback: (foodHistoryResult: IFoodRecord[]) => void) => {
-    this.validateConnection();
-
-    this.db.transaction(tx => {
-      tx.executeSql(
-        'SELECT * FROM food_registry WHERE date(timestamp) = date(?) ORDER BY id DESC',
-        [dateISO8061],
-        (_, results) => {
-          if (results.rows.length > 0) {
-            callback(results.rows.raw());
-          }
-
-          else callback([]);
-        },
-      );
-    });
-  };
-
   static addFoodRecord = (foodRecord: IFoodRecord, callback: (newFoodRecord: IFoodRecord | null) => void) => {
     this.validateConnection();
 
