@@ -25,50 +25,6 @@ export default class DataBase {
     if (!this.db) throw new Error("Database connection is closed.");
   };
 
-  static updateProfile = (profile: IProfile, callback: (success: boolean) => void) => {
-    this.validateConnection();
-
-    const {
-      id,
-      name,
-      phrase,
-      weight,
-      height,
-      age,
-      gender,
-      language,
-      activityFactor,
-    } = profile;
-
-    const sqlToRun = `UPDATE profile
-      SET name=?,
-      phrase=?,
-      weight=?,
-      height=?,
-      age=?,
-      gender=?,
-      language=?,
-      activityFactor=? WHERE id=?`;
-
-    const sqlValues = [
-      name,
-      phrase,
-      weight,
-      height,
-      age,
-      gender,
-      language,
-      activityFactor,
-      id,
-    ];
-
-    this.db.transaction(tx => {
-      tx.executeSql(sqlToRun, sqlValues, (_, results) => {
-        callback(results.rowsAffected > 0);
-      });
-    });
-  }
-
   static truncateProfile = () => {
     this.db.transaction(tx => {
       tx.executeSql('DELETE FROM profile', undefined, () => {
