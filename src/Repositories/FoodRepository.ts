@@ -19,4 +19,29 @@ export default class FoodRepository implements IFoodRepository {
       }, (error) => reject(error.message));
     });
   }
+
+  addFoodRecord(foodRecord: IFoodRecord): Promise<IFoodRecord | null> {
+    return new Promise((resolve, reject) => {
+      const { name, kcal, categoryLevel, timestamp } = foodRecord;
+
+      const sqlValues = [name, kcal, categoryLevel, timestamp];
+
+      const query = 'INSERT INTO food_registry(name, kcal, categoryLevel, timestamp) VALUES(?,?,?,?)';
+
+      this.database.transaction(tx => {
+        tx.executeSql(query, sqlValues, (_, results) => {
+          if (results.rowsAffected > 0) {
+            const newFoodRecord = {
+              id: results.insertId,
+              ...foodRecord,
+            };
+
+            resolve(newFoodRecord);
+          }
+
+          else resolve(null);
+        });
+      }, (error) => reject(error.message));
+    });
+  }
 }
