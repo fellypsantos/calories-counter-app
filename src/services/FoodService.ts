@@ -21,4 +21,8 @@ export default class FoodService {
   async updateFoodRegistry(foodRecord: IFoodRecord): Promise<boolean> {
     return await this.foodRepository.updateFoodRegistry(foodRecord);
   }
+
+  async deleteFoodRegistry(foodRecord: IFoodRecord): Promise<boolean> {
+    return await this.foodRepository.deleteFoodRegistry(foodRecord);
+  }
 }
