@@ -9,7 +9,7 @@ export default class ProfileRepository implements IProfileRepository {
     this.database = db;
   }
 
-  public getProfileData = async (): Promise<IProfile | null> => {
+  getProfileData = async (): Promise<IProfile | null> => {
     return new Promise((resolve, reject) => {
       this.database.transaction(tx => {
         tx.executeSql('SELECT * FROM profile', undefined, (_, results) => {
