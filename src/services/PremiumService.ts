@@ -12,4 +12,8 @@ export default class PremiumService {
   async setLastPremiumTimestamp(timestamp: string): Promise<boolean> {
     return await this.premiumRepository.setLastPremiumTimestamp(timestamp);
   }
+
+  async getLastPremiumTimestamp(): Promise<string> {
+    return await this.premiumRepository.getLastPremiumTimestamp();
+  }
 }
