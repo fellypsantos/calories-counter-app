@@ -1,4 +1,4 @@
-import ProfileRepository from "../Repositories/ProfileRepository";
+import ProfileRepository from "../repositories/ProfileRepository";
 import IProfileRepository from "../interfaces/IProfileRepository";
 import DataBase from "../databases";
 import { IProfile } from "../interfaces/IProfile";
