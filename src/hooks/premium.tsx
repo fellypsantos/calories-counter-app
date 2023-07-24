@@ -30,11 +30,10 @@ const PremiumProvider = ({ children }: IProps) => {
     if (success) setIsPremiumTime(true);
   }
 
-  const executePremiumTimeVerification = () => {
-    DataBase.getLastPremiumTimestamp((timestamp) => {
-      const minutesPassed = dayjs().diff(timestamp, 'minutes');
-      setIsPremiumTime(minutesPassed < MAX_MINUTES_PREMIUM_TIME);
-    });
+  const executePremiumTimeVerification = async () => {
+    const timestamp = await premiumService.getLastPremiumTimestamp();
+    const minutesPassed = dayjs().diff(timestamp, 'minutes');
+    setIsPremiumTime(minutesPassed < MAX_MINUTES_PREMIUM_TIME);
   }
 
   useEffect(() => {
