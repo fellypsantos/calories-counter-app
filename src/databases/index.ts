@@ -24,19 +24,6 @@ export default class DataBase {
     if (!this.db) throw new Error("Database connection is closed.");
   };
 
-  static deleteFoodRegistry = (foodRecord: IFoodRecord, callback: (success: boolean) => void) => {
-    this.validateConnection();
-
-    this.db.transaction(tx => {
-      tx.executeSql('DELETE FROM food_registry WHERE id=?',
-        [foodRecord.id],
-        (_, results) => {
-          callback(results.rowsAffected > 0)
-        },
-      );
-    });
-  };
-
   static setLastPremiumTimestamp = (timestamp: string, callback: (success: boolean) => void) => {
     this.validateConnection();
 
