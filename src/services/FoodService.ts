@@ -17,4 +17,8 @@ export default class FoodService {
   async addFoodRecord(foodRecord: IFoodRecord): Promise<IFoodRecord | null> {
     return await this.foodRepository.addFoodRecord(foodRecord);
   }
+
+  async updateFoodRegistry(foodRecord: IFoodRecord): Promise<boolean> {
+    return await this.foodRepository.updateFoodRegistry(foodRecord);
+  }
 }
