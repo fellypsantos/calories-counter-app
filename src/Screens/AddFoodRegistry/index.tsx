@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback } from "react";
-import { Alert, KeyboardAvoidingView } from "react-native";
+import { useState, useMemo, useCallback, useRef } from "react";
+import { Alert, KeyboardAvoidingView, TextInput } from "react-native";
 import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import dayjs from "dayjs";
 import Icon from '@expo/vector-icons/FontAwesome5';
@@ -35,6 +35,8 @@ export default function AddFoodRegistry({ route }: Props) {
   const navigation = useNavigation();
   const use24HClock = useCalendars()[0].uses24hourClock || false;
   const { Translate, selectedLanguage } = useAppTranslation();
+
+  const ref_caloriesInput = useRef<TextInput>(null);
 
   const { addFoodRecord, updateFoodRecord } = useFoodRecord();
 
@@ -153,9 +155,11 @@ export default function AddFoodRegistry({ route }: Props) {
               placeholder="Ex: Strogonoff"
               onChange={text => handleUpdateFoodRecordField('name', text as string)}
               handlePressIcon={() => handleUpdateFoodRecordField('name', '')}
+              onSubmitEditing={() => ref_caloriesInput?.current?.focus()}
             />
 
             <TextInputCustom
+              ref={ref_caloriesInput}
               value={foodRecord.kcal > 0 ? foodRecord.kcal.toString() : ''}
               label={formLabelTranslated.howManyCalories}
               placeholder="Ex: 294"
