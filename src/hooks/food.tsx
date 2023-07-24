@@ -45,20 +45,19 @@ const FoodProvider = ({ children }: IProps) => {
     }
   }, [foodHistory]);
 
-  const updateFoodRecord = useCallback((foodRecord: IFoodRecord) => {
+  const updateFoodRecord = useCallback(async (foodRecord: IFoodRecord) => {
 
-    DataBase.updateFoodRegistry(foodRecord, success => {
+    const success = await foodService.updateFoodRegistry(foodRecord);
 
-      if (success) {
-        const updatedFoodRecordList = foodHistory.map(foodItem => {
-          if (foodItem.id === foodRecord.id) return foodRecord;
-          else return foodItem;
-        });
+    if (success) {
+      const updatedFoodRecordList = foodHistory.map(foodItem => {
+        if (foodItem.id === foodRecord.id) return foodRecord;
+        else return foodItem;
+      });
 
-        setFoodHistory(updatedFoodRecordList);
-        setFoodHistoryFromDate(updatedFoodRecordList);
-      }
-    })
+      setFoodHistory(updatedFoodRecordList);
+      setFoodHistoryFromDate(updatedFoodRecordList);
+    }
   }, [foodHistory]);
 
   const deleteFoodRecord = useCallback((foodRecord: IFoodRecord) => {
