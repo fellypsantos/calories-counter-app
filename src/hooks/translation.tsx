@@ -16,7 +16,7 @@ const TranslationContext = createContext<ITranslationContext | null>(null);
 
 const TranslationProvider = ({ children }: IProps) => {
   const { t: Translate, i18n } = useTranslation();
-  const [selectedLanguage, setSelectedLanguage] = useState(getLocales()[0].languageCode);
+  const [selectedLanguage, setSelectedLanguage] = useState(getLocales()[0]?.languageCode || 'en');
 
   const setCurrentLanguage = useCallback((languageKey: string) => {
     i18n.changeLanguage(languageKey);
@@ -24,7 +24,6 @@ const TranslationProvider = ({ children }: IProps) => {
   }, []);
 
   useEffect(() => {
-
     setCurrentLanguage(selectedLanguage);
   }, []);
 

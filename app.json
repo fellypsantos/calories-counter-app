@@ -26,7 +26,10 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-localization"
+    ]
   },
   "react-native-google-mobile-ads": {
     "android_app_id": "ca-app-pub-3444194669126701~9777842896"
